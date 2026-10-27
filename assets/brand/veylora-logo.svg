@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">Veylora</title><desc id="desc">Duas asas formam um V em coral e azul-gelo, com uma estrela central.</desc>
+<defs><linearGradient id="coral" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb975"/><stop offset="1" stop-color="#ff627d"/></linearGradient><linearGradient id="ice" x1="1" y1="0" x2="0" y2="1"><stop stop-color="#7ff8ed"/><stop offset="1" stop-color="#4389f9"/></linearGradient></defs>
+<rect width="512" height="512" rx="112" fill="#0c111b"/><circle cx="256" cy="256" r="203" fill="none" stroke="#243549" stroke-width="3" stroke-dasharray="1010 266" transform="rotate(-158 256 256)"/>
+<path d="M88 128 187 162 264 323 236 401 202 371Z" fill="url(#coral)"/><path d="M251 291 302 150 429 96 322 329 250 401Z" fill="url(#ice)"/><path d="m268 91 8 20 20 8-20 8-8 20-8-20-20-8 20-8Z" fill="#dbfff9"/>
+</svg>

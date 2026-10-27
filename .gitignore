@@ -1,0 +1,17 @@
+dist/
+artifacts/
+.build/
+dependencies/vigem-client/
+*.tmp
+*.log
+*.zip
+!dependencies/vigem-client.zip
+*.sha256
+/dashboard.png
+/page-*.png
+/rea-evidence-inicial.json
+/references/
+/ANALISE-INICIAL.md
+/Iniciar Auralis.cmd
+/docs/VALIDACAO.md
+data/
