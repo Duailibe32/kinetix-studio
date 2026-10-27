@@ -20,11 +20,17 @@ if ($LASTEXITCODE -ne 0) { throw 'Compilação do Veylora falhou. Feche o aplica
 & $compiler @common /target:exe /main:Veylora.Tests "/out:$output\Veylora.Tests.exe" @sources tests\Tests.cs
 if ($LASTEXITCODE -ne 0) { throw 'Compilação dos testes falhou.' }
 Copy-Item -LiteralPath '.\README.md' -Destination (Join-Path $output 'LEIA-ME.md') -Force
-Copy-Item -LiteralPath '.\THIRD-PARTY-NOTICES.md','.\dependencies\LICENSE-ViGEmClient','.\dependencies\LICENSE-ViGEm.NET' -Destination $output -Force
+Copy-Item -LiteralPath '.\THIRD-PARTY-NOTICES.md','.\LICENSE','.\CHANGELOG.md','.\dependencies\LICENSE-ViGEmClient','.\dependencies\LICENSE-ViGEm.NET' -Destination $output -Force
 if ($Package) {
-    $files = @('Veylora.exe','ViGEmClient.dll','veylora.ico','LEIA-ME.md','THIRD-PARTY-NOTICES.md','LICENSE-ViGEmClient','LICENSE-ViGEm.NET') | ForEach-Object {Join-Path $output $_}
+    $files = @('Veylora.exe','ViGEmClient.dll','veylora.ico','LEIA-ME.md','LICENSE','CHANGELOG.md','THIRD-PARTY-NOTICES.md','LICENSE-ViGEmClient','LICENSE-ViGEm.NET') | ForEach-Object {Join-Path $output $_}
+    $stage = Join-Path $PSScriptRoot ('.build\portable-'+[Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $stage,(Join-Path $stage 'assets\brand'),(Join-Path $stage 'docs') -Force | Out-Null
+    Copy-Item -LiteralPath $files -Destination $stage
+    Copy-Item -LiteralPath '.\assets\brand\veylora-logo.png','.\assets\brand\veylora-logo.svg' -Destination (Join-Path $stage 'assets\brand')
+    Copy-Item -LiteralPath '.\docs\veylora-studio.png','.\docs\VALIDATION.md','.\docs\ARCHITECTURE.md' -Destination (Join-Path $stage 'docs')
+    Copy-Item -LiteralPath '.\CONTRIBUTING.md' -Destination $stage
     $archive = Join-Path $PSScriptRoot 'Veylora-2.0.0-win-x64.zip'
-    Compress-Archive -LiteralPath $files -DestinationPath $archive -Force
+    Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force
     $hash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
     [IO.File]::WriteAllText($archive+'.sha256',$hash+'  '+[IO.Path]::GetFileName($archive)+[Environment]::NewLine)
 }
