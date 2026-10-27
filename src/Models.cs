@@ -396,6 +396,8 @@ namespace KinetixStudio
 
     public static class Store
     {
+        // Initialize storage only at first use, after a diagnostic/test has set its override.
+        static Store() { }
         public const string LogFileName = "kinetix.log";
         public static void MigrateLegacyLog(string directory)
         {
@@ -404,7 +406,7 @@ namespace KinetixStudio
                 File.Copy(oldLog, newLog, false);
         }
 
-        public static readonly string Root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
+        public static readonly string Root = StoragePaths.Initialize();
         static string DirectoryPath
         {
             get
@@ -427,6 +429,8 @@ namespace KinetixStudio
             using (MemoryStream s = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
                 Profile p = (Profile)new DataContractJsonSerializer(typeof(Profile)).ReadObject(s);
+                if (p == null)
+                    throw new InvalidDataException("Perfil vazio.");
                 p.Validate();
                 return p;
             }
@@ -536,10 +540,31 @@ namespace KinetixStudio
     public class PadState
     {
         public double LX, LY, RX, RY;
-        public HashSet<string> Buttons = new HashSet<string>();
+        HashSet<string> buttons;
+        public HashSet<string> Buttons
+        {
+            get
+            {
+                return buttons ?? (buttons = new HashSet<string>());
+            }
+
+            set
+            {
+                buttons = value;
+            }
+        }
+
+        public int ButtonCount
+        {
+            get
+            {
+                return buttons == null ? 0 : buttons.Count;
+            }
+        }
+
         public bool Has(string a)
         {
-            return Buttons.Contains(a);
+            return buttons != null && buttons.Contains(a);
         }
 
         public PadState Copy()
@@ -550,7 +575,7 @@ namespace KinetixStudio
                 LY = LY,
                 RX = RX,
                 RY = RY,
-                Buttons = new HashSet<string>(Buttons)
+                buttons = buttons == null ? null : new HashSet<string>(buttons)
             };
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -7,10 +8,32 @@ namespace KinetixStudio
 {
     public static class T
     {
+        static readonly Dictionary<int, Font> fonts = new Dictionary<int, Font>();
         public static Color Bg = Color.FromArgb(10, 15, 24), Side = Color.FromArgb(13, 20, 31), Card = Color.FromArgb(18, 28, 42), Line = Color.FromArgb(35, 52, 71), Text = Color.FromArgb(240, 245, 252), Muted = Color.FromArgb(148, 169, 190), Mint = Color.FromArgb(255, 171, 124), Purple = Color.FromArgb(112, 227, 226);
         public static Font Font(float size, FontStyle style)
         {
-            return new Font("Segoe UI", size, style);
+            int key = (int)Math.Round(size * 100) | ((int)style << 20);
+            lock (fonts)
+            {
+                Font font;
+                if (!fonts.TryGetValue(key, out font))
+                {
+                    font = new Font("Segoe UI", size, style);
+                    fonts.Add(key, font);
+                }
+
+                return font;
+            }
+        }
+
+        public static void DisposeFonts()
+        {
+            lock (fonts)
+            {
+                foreach (Font font in fonts.Values)
+                    font.Dispose();
+                fonts.Clear();
+            }
         }
 
         public static GraphicsPath Round(RectangleF r, float radius)
@@ -41,9 +64,8 @@ namespace KinetixStudio
 
         public static void TextAt(Graphics g, string text, float size, Color color, float x, float y, FontStyle style)
         {
-            using (Font f = Font(size, style))
             using (Brush b = new SolidBrush(color))
-                g.DrawString(text, f, b, x, y);
+                g.DrawString(text, Font(size, style), b, x, y);
         }
 
         public static Label Label(string text, int size, Color color, int x, int y, int width, int height)
@@ -182,7 +204,6 @@ namespace KinetixStudio
             using (Pen pen = new Pen(active ? tint : T.Line, 1.5f))
                 g.DrawEllipse(pen, x - radius, y - radius, radius * 2, radius * 2);
             if (text != null)
-                using (Font f = T.Font(12, FontStyle.Bold))
                 using (Brush b = new SolidBrush(active ? T.Bg : tint))
                 {
                     StringFormat sf = new StringFormat
@@ -190,7 +211,7 @@ namespace KinetixStudio
                         Alignment = StringAlignment.Center,
                         LineAlignment = StringAlignment.Center
                     };
-                    g.DrawString(text, f, b, new RectangleF(x - radius, y - radius, radius * 2, radius * 2), sf);
+                    g.DrawString(text, T.Font(12, FontStyle.Bold), b, new RectangleF(x - radius, y - radius, radius * 2, radius * 2), sf);
                     sf.Dispose();
                 }
         }

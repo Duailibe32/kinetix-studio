@@ -1,5 +1,15 @@
 # Histórico
 
+## 2.2.0 — Otimização e instalação · 27/10/2026
+
+- Release x64 otimizado; distribuição restrita a quatro arquivos, sem testes e ferramentas.
+- Instalador Inno Setup por usuário, com atalhos e desinstalação que preserva dados e driver compartilhado.
+- Detecção de .NET 4.8 compatível; driver oficial opcional, verificado por SHA-256 e confirmação explícita.
+- Perfis em AppData, importação não destrutiva de dados portáteis e cópia de conflitos.
+- Menos atualizações visuais ociosas, fontes reutilizadas, ícone incorporado e menos alocações neutras.
+- Descarte explícito do ícone e menu da bandeja; callbacks protegidos contra janela encerrada.
+- Testes adicionais de migração, recursos, entrada e instalação; medições detalhadas em docs/OPTIMIZATION.md.
+
 ## 2.1.0 — Kinetix Studio · 27/10/2026
 
 - Novo nome oficial: Kinetix Studio; executável KinetixStudio.exe.

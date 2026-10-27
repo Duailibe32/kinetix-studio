@@ -261,6 +261,7 @@ namespace KinetixStudio
 
     public sealed class InputEngine : IDisposable
     {
+        static readonly PadState neutral = new PadState();
         readonly object sync = new object ();
         readonly bool[] keys = new bool[258], mapped = new bool[258];
         readonly uint ownPid = (uint)Process.GetCurrentProcess().Id;
@@ -440,7 +441,7 @@ namespace KinetixStudio
             ReportsSent++;
             if (changed)
             {
-                if (report.Buttons.Count > 0)
+                if (report.ButtonCount > 0)
                 {
                     List<string> labels = new List<string>();
                     foreach (string b in report.Buttons)
@@ -457,7 +458,7 @@ namespace KinetixStudio
 
         public static bool Equivalent(PadState a, PadState b)
         {
-            return a.LX == b.LX && a.LY == b.LY && a.RX == b.RX && a.RY == b.RY && a.Buttons.SetEquals(b.Buttons);
+            return ReferenceEquals(a, b) || (a.LX == b.LX && a.LY == b.LY && a.RX == b.RX && a.RY == b.RY && a.ButtonCount == b.ButtonCount && (a.ButtonCount == 0 || a.Buttons.SetEquals(b.Buttons)));
         }
 
         bool OwnForeground()
@@ -646,7 +647,7 @@ namespace KinetixStudio
                             Submit(edge);
                         }
 
-                        state = gate ? Mapper.Map(profile, keys, dx, dy, dt, ref sx, ref sy) : new PadState();
+                        state = gate ? Mapper.Map(profile, keys, dx, dy, dt, ref sx, ref sy) : neutral;
                         dx = dy = 0;
                         Submit(state);
                         ticks++;

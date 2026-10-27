@@ -21,6 +21,18 @@ namespace KinetixStudio
         [STAThread]
         public static int Main(string[] args)
         {
+            Environment.SetEnvironmentVariable("KINETIX_DATA_DIR", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data"));
+            if (args.Length == 2 && args[0] == "--fixture")
+            {
+                Profile fixture = Profile.Create();
+                fixture.Name = "Installer validation";
+                Directory.CreateDirectory(Path.Combine(args[1], "profiles"));
+                File.WriteAllText(Path.Combine(args[1], "profiles", fixture.Id + ".json"), Store.Serialize(fixture));
+                File.WriteAllText(Path.Combine(args[1], "selected.txt"), fixture.Id);
+                File.WriteAllText(Path.Combine(args[1], "desktop.json"), "{\"MinimizeToTray\":true}");
+                return 0;
+            }
+
             try
             {
                 Profile p = Profile.Create();
@@ -188,6 +200,42 @@ namespace KinetixStudio
                 hat.Buttons.Add("Up");
                 hat.Buttons.Add("Right");
                 Assert((VirtualPad.ToDS4(hat).Buttons & 15) == 1, "DS4 diagonal cima/direita usa hat 1");
+                string storageCase = Path.Combine(Store.Root, "storage-" + Guid.NewGuid().ToString("N")), legacyCase = Path.Combine(storageCase, "legacy"), newCase = Path.Combine(storageCase, "appdata");
+                Directory.CreateDirectory(Path.Combine(legacyCase, "profiles"));
+                Profile storageProfile = Profile.Create();
+                storageProfile.Name = "Meu perfil preservado";
+                string legacyProfile = Path.Combine(legacyCase, "profiles", storageProfile.Id + ".json");
+                File.WriteAllText(legacyProfile, Store.Serialize(storageProfile));
+                File.WriteAllText(Path.Combine(legacyCase, "selected.txt"), storageProfile.Id);
+                File.WriteAllText(Path.Combine(legacyCase, "desktop.json"), "{\"MinimizeToTray\":true}");
+                Assert(StoragePaths.Migrate(legacyCase, newCase) == 3, "migração AppData importa perfil, seleção e preferências");
+                string imported = Path.Combine(newCase, "profiles", storageProfile.Id + ".json");
+                Assert(File.ReadAllText(imported) == File.ReadAllText(legacyProfile), "migração mantém conteúdo e origem do perfil");
+                File.WriteAllText(Path.Combine(newCase, "desktop.json"), "{\"MinimizeToTray\":false}");
+                Assert(StoragePaths.Migrate(legacyCase, newCase) == 0 && File.ReadAllText(Path.Combine(newCase, "desktop.json")).Contains("false"), "migração é idempotente e preserva preferências novas");
+                string conflictCase = Path.Combine(storageCase, "conflict");
+                Directory.CreateDirectory(Path.Combine(conflictCase, "profiles"));
+                Profile updated = storageProfile.Copy();
+                updated.Name = "Atualizado";
+                File.WriteAllText(Path.Combine(conflictCase, "profiles", updated.Id + ".json"), Store.Serialize(updated));
+                StoragePaths.Migrate(legacyCase, conflictCase);
+                Assert(Store.Deserialize(File.ReadAllText(Path.Combine(conflictCase, "profiles", updated.Id + ".json"))).Name == "Atualizado", "migração nunca sobrescreve um perfil existente");
+                Assert(Directory.GetFiles(Path.Combine(conflictCase, "migration-backups")).Length > 0, "conflitos de migração ficam em backup separado");
+                Assert(StoragePaths.Migrate(newCase, newCase) == 0, "migração não copia uma pasta sobre ela mesma");
+                Assert(Object.ReferenceEquals(T.Font(10, System.Drawing.FontStyle.Regular), T.Font(10, System.Drawing.FontStyle.Regular)), "fontes GDI são reutilizadas");
+                PadState empty = new PadState();
+                Assert(empty.ButtonCount == 0 && !empty.Has("Cross") && empty.Copy().ButtonCount == 0, "estado neutro não aloca botões desnecessários");
+                bool emptyRejected = false;
+                try
+                {
+                    Store.Deserialize("null");
+                }
+                catch (InvalidDataException)
+                {
+                    emptyRejected = true;
+                }
+
+                Assert(emptyRejected, "perfil JSON nulo é rejeitado");
                 Profile preserved = Profile.Create();
                 preserved.Name = "Meu perfil anterior";
                 preserved.Sensitivity = 83;
@@ -215,6 +263,8 @@ namespace KinetixStudio
 
                 if (args.Contains("--integration"))
                     Integration();
+                if (args.Contains("--input-integration"))
+                    InputIntegration();
                 Console.WriteLine("TOTAL: " + passed + " testes passaram.");
                 return 0;
             }
@@ -277,6 +327,114 @@ namespace KinetixStudio
                 pad.Send(s);
                 pad.Send(new PadState());
                 Assert(true, "driver aceitou DS4 Cross e relatório neutro");
+            }
+        }
+
+        [DllImport("user32.dll")]
+        static extern void keybd_event(byte key, byte scan, uint flags, UIntPtr extra);
+        [DllImport("user32.dll")]
+        static extern void mouse_event(uint flags, int dx, int dy, uint data, UIntPtr extra);
+        static void Pump(int milliseconds)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            while (watch.ElapsedMilliseconds < milliseconds)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                Thread.Sleep(2);
+            }
+        }
+
+        static void InputIntegration()
+        {
+            var occupied = new HashSet<uint>();
+            for (uint i = 0; i < 4; i++)
+            {
+                Native.XState old;
+                if (Native.XInputGetState(i, out old) == 0)
+                    occupied.Add(i);
+            }
+
+            using (var form = new System.Windows.Forms.Form
+            {
+                Text = "Kinetix Studio input validation",
+                Width = 320,
+                Height = 160,
+                TopMost = true,
+                StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+            }
+
+            )
+            using (var engine = new InputEngine())
+            {
+                form.Show();
+                form.Activate();
+                Pump(180);
+                uint pid;var focusWait=System.Diagnostics.Stopwatch.StartNew();
+                do{Native.GetWindowThreadProcessId(Native.GetForegroundWindow(),out pid);if(pid==(uint)System.Diagnostics.Process.GetCurrentProcess().Id)break;Pump(50);}while(focusWait.ElapsedMilliseconds<45000);
+                if (pid != (uint)System.Diagnostics.Process.GetCurrentProcess().Id)
+                    throw new InvalidOperationException("Teste de entrada não executado: a janela de validação não recebeu foco.");
+                Profile p = Profile.Create();
+                p.Controller = "X360";
+                p.Smoothing = 0;
+                p.Deadzone = 0;
+                p.BlockMouse = false;
+                System.Windows.Forms.Cursor.Position = form.PointToScreen(new System.Drawing.Point(80, 80));
+                Pump(30);
+                engine.TestInApp = true;
+                engine.Start(p);
+                Pump(180);
+                uint slot = 99;
+                for (uint i = 0; i < 4; i++)
+                {
+                    Native.XState found;
+                    if (!occupied.Contains(i) && Native.XInputGetState(i, out found) == 0)
+                    {
+                        slot = i;
+                        break;
+                    }
+                }
+
+                if (slot > 3)
+                    throw new Exception("Slot XInput não encontrado no teste de hooks.");
+                try
+                {
+                    keybd_event(32, 0, 0, UIntPtr.Zero);
+                    Pump(60);
+                    Native.XState read;
+                    Assert(Native.XInputGetState(slot, out read) == 0 && (read.Report.Buttons & 0x1000) != 0, "hook real de teclado converte ESPAÇO em A lido por XInput");
+                    keybd_event(32, 0, 2, UIntPtr.Zero);
+                    Pump(60);
+                    Assert(Native.XInputGetState(slot, out read) == 0 && (read.Report.Buttons & 0x1000) == 0, "soltura real de teclado neutraliza o botão virtual");
+                    bool moved = false;
+                    int maxRX = 0, maxRY = 0;
+                    var clock = System.Diagnostics.Stopwatch.StartNew();
+                    while (clock.ElapsedMilliseconds < 300)
+                    {
+                        Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), out pid);
+                        if (pid != (uint)System.Diagnostics.Process.GetCurrentProcess().Id)
+                            throw new InvalidOperationException("A janela de validação perdeu o foco durante o teste de mouse.");
+                        mouse_event(1, 4, -4, 0, UIntPtr.Zero);
+                        System.Windows.Forms.Application.DoEvents();
+                        Native.XInputGetState(slot, out read);
+                        maxRX = Math.Max(maxRX, read.Report.RX);
+                        maxRY = Math.Max(maxRY, read.Report.RY);
+                        if (Native.XInputGetState(slot, out read) == 0 && read.Report.RX > 0 && read.Report.RY > 0)
+                        {
+                            moved = true;
+                            break;
+                        }
+
+                        Thread.Sleep(4);
+                    }
+
+                    Assert(moved, "hook real de mouse produz analógico direito lido por XInput (" + maxRX + ", " + maxRY + ")");
+                }
+                finally
+                {
+                    keybd_event(32, 0, 2, UIntPtr.Zero);
+                    engine.Stop();
+                    form.Close();
+                }
             }
         }
     }

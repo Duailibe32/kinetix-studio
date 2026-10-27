@@ -1,0 +1,294 @@
+[
+  {
+    "Path": "Auralis-1.0.0-win-x64.zip",
+    "Bytes": 108305.0
+  },
+  {
+    "Path": "Veylora-2.0.0-win-x64.zip",
+    "Bytes": 226921.0
+  },
+  {
+    "Path": "Veylora-2.0.0-win-x64.zip.sha256",
+    "Bytes": 93.0
+  },
+  {
+    "Path": "KinetixStudio-2.1.0-win-x64.zip",
+    "Bytes": 228477.0
+  },
+  {
+    "Path": "KinetixStudio-2.1.0-win-x64.zip.sha256",
+    "Bytes": 99.0
+  },
+  {
+    "Path": "dashboard.png",
+    "Bytes": 78236.0
+  },
+  {
+    "Path": "page-1.png",
+    "Bytes": 58006.0
+  },
+  {
+    "Path": "page-2.png",
+    "Bytes": 55720.0
+  },
+  {
+    "Path": "page-3.png",
+    "Bytes": 48960.0
+  },
+  {
+    "Path": "page-4.png",
+    "Bytes": 66408.0
+  },
+  {
+    "Path": "page-5.png",
+    "Bytes": 60844.0
+  },
+  {
+    "Path": "dist\\AssetTool.exe",
+    "Bytes": 84480.0
+  },
+  {
+    "Path": "dist\\Auralis.exe",
+    "Bytes": 69120.0
+  },
+  {
+    "Path": "dist\\auralis.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "dist\\Auralis.Tests.exe",
+    "Bytes": 70144.0
+  },
+  {
+    "Path": "dist\\Veylora.exe",
+    "Bytes": 86528.0
+  },
+  {
+    "Path": "dist\\veylora.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "dist\\Veylora.Tests.exe",
+    "Bytes": 90112.0
+  },
+  {
+    "Path": "dist\\KinetixStudio.Tests.exe",
+    "Bytes": 92160.0
+  },
+  {
+    "Path": "dist\\kinetix.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "dist\\CHANGELOG.md",
+    "Bytes": 2162.0
+  },
+  {
+    "Path": "dist\\LEIA-ME.md",
+    "Bytes": 6260.0
+  },
+  {
+    "Path": "dist\\LICENSE",
+    "Bytes": 355.0
+  },
+  {
+    "Path": "dist\\LICENSE-ViGEm.NET",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "dist\\LICENSE-ViGEmClient",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "dist\\THIRD-PARTY-NOTICES.md",
+    "Bytes": 925.0
+  },
+  {
+    "Path": "dist\\VALIDACAO.md",
+    "Bytes": 2948.0
+  },
+  {
+    "Path": "artifacts\\clean\\AssetTool.exe",
+    "Bytes": 82944.0
+  },
+  {
+    "Path": "artifacts\\clean\\LEIA-ME.md",
+    "Bytes": 5908.0
+  },
+  {
+    "Path": "artifacts\\clean\\LICENSE-ViGEm.NET",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\clean\\LICENSE-ViGEmClient",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\clean\\THIRD-PARTY-NOTICES.md",
+    "Bytes": 918.0
+  },
+  {
+    "Path": "artifacts\\clean\\Veylora.exe",
+    "Bytes": 86016.0
+  },
+  {
+    "Path": "artifacts\\clean\\veylora.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "artifacts\\clean\\Veylora.Tests.exe",
+    "Bytes": 89600.0
+  },
+  {
+    "Path": "artifacts\\clean\\ViGEmClient.dll",
+    "Bytes": 141312.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\AssetTool.exe",
+    "Bytes": 84480.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\CHANGELOG.md",
+    "Bytes": 2162.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\kinetix.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\KinetixStudio.exe",
+    "Bytes": 87552.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\KinetixStudio.Tests.exe",
+    "Bytes": 92160.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\LEIA-ME.md",
+    "Bytes": 6260.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\LICENSE",
+    "Bytes": 355.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\LICENSE-ViGEm.NET",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\LICENSE-ViGEmClient",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\THIRD-PARTY-NOTICES.md",
+    "Bytes": 925.0
+  },
+  {
+    "Path": "artifacts\\kinetix-clean\\ViGEmClient.dll",
+    "Bytes": 141312.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\AssetTool.exe",
+    "Bytes": 84480.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\CHANGELOG.md",
+    "Bytes": 2032.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\kinetix.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\KinetixStudio.exe",
+    "Bytes": 87552.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\KinetixStudio.Tests.exe",
+    "Bytes": 92160.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\LEIA-ME.md",
+    "Bytes": 6260.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\LICENSE",
+    "Bytes": 355.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\LICENSE-ViGEm.NET",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\LICENSE-ViGEmClient",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\THIRD-PARTY-NOTICES.md",
+    "Bytes": 925.0
+  },
+  {
+    "Path": "artifacts\\kinetix-preview\\ViGEmClient.dll",
+    "Bytes": 141312.0
+  },
+  {
+    "Path": "artifacts\\release\\AssetTool.exe",
+    "Bytes": 83456.0
+  },
+  {
+    "Path": "artifacts\\release\\CHANGELOG.md",
+    "Bytes": 1435.0
+  },
+  {
+    "Path": "artifacts\\release\\LEIA-ME.md",
+    "Bytes": 5908.0
+  },
+  {
+    "Path": "artifacts\\release\\LICENSE",
+    "Bytes": 355.0
+  },
+  {
+    "Path": "artifacts\\release\\LICENSE-ViGEm.NET",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\release\\LICENSE-ViGEmClient",
+    "Bytes": 1084.0
+  },
+  {
+    "Path": "artifacts\\release\\THIRD-PARTY-NOTICES.md",
+    "Bytes": 918.0
+  },
+  {
+    "Path": "artifacts\\release\\Veylora.exe",
+    "Bytes": 86528.0
+  },
+  {
+    "Path": "artifacts\\release\\veylora.ico",
+    "Bytes": 2686.0
+  },
+  {
+    "Path": "artifacts\\release\\Veylora.Tests.exe",
+    "Bytes": 90112.0
+  },
+  {
+    "Path": "artifacts\\release\\ViGEmClient.dll",
+    "Bytes": 141312.0
+  },
+  {
+    "Path": ".build\\portable-a33fd0e8fb3246908c839e0773798778",
+    "Bytes": 373000.0
+  },
+  {
+    "Path": ".build\\portable-e234e53f66064cdab5029d3b56848d79",
+    "Bytes": 368720.0
+  },
+  {
+    "Path": "dependencies\\vigem-client",
+    "Bytes": 347640.0
+  },
+  {
+    "Path": ".build\\vigem-client\\lib",
+    "Bytes": 290304.0
+  }
+]

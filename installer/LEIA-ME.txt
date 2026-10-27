@@ -1,0 +1,22 @@
+KINETIX STUDIO 2.2
+
+Windows x64, .NET Framework 4.8 ou compatível (como 4.8.1).
+Abra KinetixStudio.exe. F8 ativa/pausa; F12 desliga imediatamente.
+
+Perfis, seleção, preferências e histórico ficam em:
+%LOCALAPPDATA%\KinetixStudio
+
+A pasta data da versão portátil é importada automaticamente ao abrir a
+nova versão na mesma pasta. Os originais não são apagados e dados já
+existentes em AppData não são sobrescritos. O instalador também permite
+escolher outra pasta antiga. Desinstalar preserva seus dados pessoais.
+
+O controle virtual requer ViGEmBus. Ele é compartilhado com outros apps.
+O projeto foi arquivado; a versão oficial 1.22.0 removeu o atualizador.
+Nenhum driver ou runtime é instalado sem sua autorização.
+Não remova drivers usados por outros aplicativos.
+
+Driver oficial: https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0
+.NET oficial: https://dotnet.microsoft.com/download/dotnet-framework/net48
+Código/documentação: https://github.com/Duailibe32/kinetix-studio
+Licenças: LICENSES.txt. O programa não coleta telemetria nem exige conta.

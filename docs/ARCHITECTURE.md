@@ -31,4 +31,10 @@ O mouse usa deslocamentos do cursor do Windows. Não há Raw Input, supressão d
 
 ## Dados
 
-A pasta `data` fica ao lado do executável. Perfis antigos são compatíveis e recebem os padrões novos na desserialização. O ZIP de distribuição não inclui dados pessoais. Não há migração automática de diretórios externos: copie a pasta `data` da versão anterior, se estiver usando outra pasta de instalação.
+`StoragePaths.cs` usa `%LOCALAPPDATA%\KinetixStudio`. A pasta `data` adjacente é importada uma vez por origem, preservando os originais e os arquivos já existentes. Conflitos recebem cópia em `migration-backups`. O instalador aceita uma origem externa. `KINETIX_DATA_DIR` permite caminho absoluto para testes isolados. O pacote não inclui dados pessoais.
+
+## Recursos e distribuição
+
+Fontes são reutilizadas e liberadas ao encerrar. O ícone é clonado do recurso incorporado sem carregar componentes do Shell para extraí-lo. O temporizador visual para quando a janela fica oculta/minimizada ou fora das páginas ao vivo; o intervalo do motor continua independente. Estados neutros evitam alocar conjuntos vazios de botões.
+
+Release usa csc x64 otimizado, sem símbolos e com alinhamento de 512 bytes. O payload contém somente quatro arquivos permitidos. Inno Setup gera instalação por usuário, verifica pré-requisitos e preserva AppData e drivers na desinstalação.

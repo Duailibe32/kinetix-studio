@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 
 namespace KinetixStudio
 {
@@ -14,9 +16,38 @@ namespace KinetixStudio
         [STAThread]
         static void Main(string[] args)
         {
+            try
+            {
+                Run(args);
+            }
+            catch (Exception ex)
+            {
+                Environment.ExitCode = 1;
+                if (args.Length > 0 && args[0].StartsWith("--", StringComparison.Ordinal))
+                    Console.Error.WriteLine(ex);
+                else
+                    MessageBox.Show("Não foi possível iniciar o Kinetix Studio. Verifique as permissões da pasta de dados.\n\n" + ex.GetBaseException().Message, "Kinetix Studio", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        static void Run(string[] args)
+        {
             Native.SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.ApplicationExit += (s, e) => T.DisposeFonts();
+            if (args.Length == 2 && args[0] == "--diagnostics")
+            {
+                Diagnostics.Write(args[1]);
+                return;
+            }
+
+            if (args.Length == 2 && args[0] == "--migrate-from")
+            {
+                StoragePaths.Migrate(args[1], Store.Root);
+                return;
+            }
+
             Application.ThreadException += (s, e) =>
             {
                 Store.Log(e.Exception.ToString());

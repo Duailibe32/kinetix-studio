@@ -31,6 +31,8 @@ namespace KinetixStudio
         NotifyIcon tray;
         System.Windows.Forms.Timer layoutTimer;
         int layoutWidth;
+        Icon ownedIcon;
+        int probing;
         public MainWindow(bool render)
         {
             renderOnly = render;
@@ -46,7 +48,8 @@ namespace KinetixStudio
             AutoScaleMode = AutoScaleMode.Dpi;
             try
             {
-                Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "kinetix.ico"));
+                ownedIcon = EmbeddedIcon.Load();
+                Icon = ownedIcon;
             }
             catch
             {
@@ -147,20 +150,18 @@ namespace KinetixStudio
             header.Resize += (s, e) => power.Location = new Point(header.Width - 224, 25);
             engine.Fault += (message) =>
             {
-                if (!IsDisposed)
-                    BeginInvoke((Action)(() =>
-                    {
-                        engine.Stop();
-                        SetPower();
-                        Notify(message, true);
-                    }));
+                OnUi(() =>
+                {
+                    engine.Stop();
+                    SetPower();
+                    Notify(message, true);
+                });
             };
             refresh = new System.Windows.Forms.Timer
             {
                 Interval = 50
             };
             refresh.Tick += (s, e) => RefreshLive();
-            refresh.Start();
             layoutTimer = new System.Windows.Forms.Timer
             {
                 Interval = 180
@@ -181,6 +182,17 @@ namespace KinetixStudio
 
                 if (WindowState == FormWindowState.Minimized && desktop.MinimizeToTray && !renderOnly)
                     Hide();
+                RefreshLive();
+                UpdateRefresh();
+            };
+            VisibleChanged += (s, e) => UpdateRefresh();
+            FormClosed += (s, e) =>
+            {
+                if (ownedIcon != null)
+                {
+                    ownedIcon.Dispose();
+                    ownedIcon = null;
+                }
             };
             FormClosing += (s, e) =>
             {
@@ -190,8 +202,11 @@ namespace KinetixStudio
                 layoutTimer.Dispose();
                 if (tray != null)
                 {
+                    ContextMenuStrip menu = tray.ContextMenuStrip;
                     tray.Visible = false;
                     tray.Dispose();
+                    if (menu != null)
+                        menu.Dispose();
                 }
 
                 if (safetyHook != IntPtr.Zero)
@@ -226,6 +241,8 @@ namespace KinetixStudio
 
                     Probe();
                 }
+
+                UpdateRefresh();
             };
             if (!renderOnly)
             {
@@ -257,6 +274,39 @@ namespace KinetixStudio
             Show();
             WindowState = FormWindowState.Normal;
             Activate();
+            RefreshLive();
+            UpdateRefresh();
+        }
+
+        void UpdateRefresh()
+        {
+            if (refresh == null || IsDisposed || Disposing)
+                return;
+            if (renderOnly || !Visible || WindowState == FormWindowState.Minimized || !engine.Running || (page != 0 && page != 4))
+            {
+                refresh.Stop();
+                return;
+            }
+
+            refresh.Interval = page == 4 ? 50 : 200;
+            refresh.Start();
+        }
+
+        void OnUi(Action action)
+        {
+            if (IsDisposed || Disposing || !IsHandleCreated)
+                return;
+            try
+            {
+                BeginInvoke((Action)(() =>
+                {
+                    if (!IsDisposed && !Disposing)
+                        action();
+                }));
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
 
         IntPtr SafetyKeyboard(int code, IntPtr w, IntPtr l)
@@ -298,6 +348,8 @@ namespace KinetixStudio
 
         void Probe()
         {
+            if (Interlocked.Exchange(ref probing, 1) != 0)
+                return;
             System.Threading.Tasks.Task.Run(() =>
             {
                 string result;
@@ -329,14 +381,14 @@ namespace KinetixStudio
                     }
                 }
 
-                if (!IsDisposed)
-                    BeginInvoke((Action)(() =>
-                    {
-                        driverReady = ready;
-                        driverStatus = result;
-                        if (page == 0 || page == 6)
-                            Navigate(page);
-                    }));
+                Interlocked.Exchange(ref probing, 0);
+                OnUi(() =>
+                {
+                    driverReady = ready;
+                    driverStatus = result;
+                    if (page == 0 || page == 6)
+                        Navigate(page);
+                });
             });
         }
 
@@ -377,6 +429,7 @@ namespace KinetixStudio
             if (tray != null)
                 tray.Text = engine.Running ? "Kinetix Studio · Controle ativo" : "Kinetix Studio · Controle desativado";
             RefreshLive();
+            UpdateRefresh();
         }
 
         void Changed()
@@ -455,6 +508,7 @@ namespace KinetixStudio
 
             content.ResumeLayout();
             RefreshLive();
+            UpdateRefresh();
         }
 
         int Available
@@ -1132,9 +1186,9 @@ namespace KinetixStudio
 
         void RefreshLive()
         {
-            if (IsDisposed)
+            if (IsDisposed || (!renderOnly && (!Visible || WindowState == FormWindowState.Minimized)))
                 return;
-            PadState s = engine.State;
+            PadState s = controller != null || activityLabel != null ? engine.State : null;
             if (controller != null)
             {
                 bool repaint = controller.Kind != profile.Controller || !InputEngine.Equivalent(controller.State, s);
@@ -1153,7 +1207,7 @@ namespace KinetixStudio
             if (hzLabel != null)
                 hzLabel.Text = engine.Running ? engine.ActualHz + " Hz" : "— Hz";
             if (activityLabel != null)
-                activityLabel.Text = engine.Running ? "LS  " + s.LX.ToString("+0.00;-0.00;0.00") + ", " + s.LY.ToString("+0.00;-0.00;0.00") + "     RS  " + s.RX.ToString("+0.00;-0.00;0.00") + ", " + s.RY.ToString("+0.00;-0.00;0.00") + "\nBotões agora: " + (s.Buttons.Count == 0 ? "nenhum" : String.Join(" · ", s.Buttons.Select(b => Catalog.Output(b, profile.Controller)).ToArray())) + "\nÚltimo botão enviado: " + engine.LastButton : "Ative o controle para começar. ESPAÇO → " + (profile.Controller == "PS4" ? "X" : "A") + ".";
+                activityLabel.Text = engine.Running ? "LS  " + s.LX.ToString("+0.00;-0.00;0.00") + ", " + s.LY.ToString("+0.00;-0.00;0.00") + "     RS  " + s.RX.ToString("+0.00;-0.00;0.00") + ", " + s.RY.ToString("+0.00;-0.00;0.00") + "\nBotões agora: " + (s.ButtonCount == 0 ? "nenhum" : String.Join(" · ", s.Buttons.Select(b => Catalog.Output(b, profile.Controller)).ToArray())) + "\nÚltimo botão enviado: " + engine.LastButton : "Ative o controle para começar. ESPAÇO → " + (profile.Controller == "PS4" ? "X" : "A") + ".";
         }
     }
 }

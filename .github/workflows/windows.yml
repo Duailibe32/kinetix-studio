@@ -9,24 +9,26 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Compile and package offline
+      - name: Compile and package
         shell: pwsh
-        run: ./build.ps1 -Package
+        run: ./build.ps1 -Package -Installer
       - name: Tests without external driver
         shell: pwsh
         run: |
-          ./dist/KinetixStudio.Tests.exe
+          ./.build/tests/KinetixStudio.Tests.exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Upload portable build
+      - name: Upload Windows distribution
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: KinetixStudio-Windows-x64
           path: |
-            KinetixStudio-2.1.0-win-x64.zip
-            KinetixStudio-2.1.0-win-x64.zip.sha256
+            KinetixStudio-2.2.0-win-x64.zip
+            KinetixStudio-2.2.0-win-x64.zip.sha256
+            installer-output/KinetixStudio-Setup.exe
+            installer-output/KinetixStudio-Setup.exe.sha256
           if-no-files-found: error
           retention-days: 14

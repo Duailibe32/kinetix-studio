@@ -15,3 +15,5 @@ dependencies/vigem-client/
 /Iniciar Auralis.cmd
 /docs/VALIDACAO.md
 data/
+backups/
+installer-output/

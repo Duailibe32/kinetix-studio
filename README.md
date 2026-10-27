@@ -1,13 +1,13 @@
 <p align="center"><img src="assets/brand/kinetix-logo.png" width="124" alt="Logo Kinetix Studio" /></p>
 <h1 align="center">Kinetix Studio</h1>
 <p align="center"><strong>Seu movimento. Sua assinatura.</strong><br/>Teclado e mouse transformados em um controle virtual para Windows.</p>
-<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.1.0</p>
+<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.2.0</p>
 
 ![Estúdio Kinetix Studio](docs/kinetix-studio.png)
 
 ## Começar
 
-1. Baixe o ZIP em [Releases](https://github.com/Duailibe32/kinetix-studio/releases/latest) e extraia a pasta inteira.
+1. Baixe KinetixStudio-Setup.exe ou o ZIP em [Releases](https://github.com/Duailibe32/kinetix-studio/releases/latest) e instale ou extraia a pasta inteira.
 2. Abra **KinetixStudio.exe**. Mantenha `ViGEmClient.dll` ao lado do executável.
 3. Escolha um perfil ou preset. Em **Preferências**, selecione PS4 ou Xbox 360 e, opcionalmente, o executável do jogo.
 4. Pressione **F8** para ativar e volte ao jogo. **F8** pausa; **F12** desliga e libera as entradas.
@@ -58,14 +58,14 @@ Não há macros, giroscópio, vibração, ocultação de controle físico ou toq
 
 ## Seus arquivos
 
-A pasta `data` é criada ao lado do executável:
+Os dados ficam em `%LOCALAPPDATA%\KinetixStudio`, separados da instalação:
 
 - `profiles/`: perfis JSON validados; gravação atômica.
 - `selected.txt`: perfil escolhido.
 - `desktop.json`: preferência da bandeja.
 - `kinetix.log`: eventos locais com rotação por tamanho.
 
-Os perfis da versão 1.0 continuam compatíveis. Se atualizar na mesma pasta, eles são encontrados automaticamente. Se extrair em outra pasta, copie a pasta `data` para preservar seus perfis. Perfis antigos mantêm ALT livre até você configurar a caminhada. O pacote de release não inclui perfis ou logs pessoais.
+Os perfis da versão 1.0 continuam compatíveis. A antiga pasta `data` adjacente é importada uma vez, preservando os originais e os arquivos já existentes em AppData. Conflitos recebem cópia em `migration-backups`. O instalador aceita indicar uma pasta `data` externa. Atualização e desinstalação preservam dados pessoais. Perfis antigos mantêm ALT livre até configurar a caminhada. Veja [medições e otimização](docs/OPTIMIZATION.md).
 
 A versão 2.1 adota o nome **Kinetix Studio**. Os executáveis anteriores não são necessários para abrir a nova versão. O histórico `veylora.log`, quando presente, é copiado para `kinetix.log` sem apagar o original ou sobrescrever um histórico novo. Feche a versão anterior antes de ativar o novo aplicativo.
 
@@ -73,17 +73,20 @@ A versão 2.1 adota o nome **Kinetix Studio**. Os executáveis anteriores não s
 
 ```powershell
 pwsh -File .\build.ps1
-.\dist\KinetixStudio.Tests.exe
+.\.build\tests\KinetixStudio.Tests.exe
 ```
 
 O build restaura a biblioteca nativa a partir do pacote oficial versionado, validando seu SHA-256. Não exige SDK .NET ou download durante a compilação. Use PowerShell 7 em Windows com .NET Framework 4.8.
 
 ```powershell
 # Cria temporariamente controles virtuais. Execute fora de uma partida.
-.\dist\KinetixStudio.Tests.exe --integration
+.\.build\tests\KinetixStudio.Tests.exe --integration
 
 # Gera o pacote portátil e seu SHA-256.
 pwsh -File .\build.ps1 -Package
+
+# Inclui instalador; primeira execução prepara Inno Setup oficial verificado.
+pwsh -File .\build.ps1 -Package -Installer
 
 # Build isolado para conferir uma cópia limpa.
 pwsh -File .\build.ps1 -OutputDir artifacts\clean
