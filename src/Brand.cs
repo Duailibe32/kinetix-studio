@@ -4,11 +4,11 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Veylora
+namespace KinetixStudio
 {
     public static class Brand
     {
-        public const string Version = "2.0.0";
+        public const string Version = "2.1.0";
         [DllImport("user32.dll")]
         static extern bool DestroyIcon(IntPtr handle);
         public static void Draw(Graphics graphics, RectangleF bounds, bool tile)
@@ -23,26 +23,25 @@ namespace Veylora
                 graphics.DrawArc(p, 53, 53, 406, 406, 202, 285);
             PointF[] left =
             {
-                new PointF(88, 128),
-                new PointF(187, 162),
-                new PointF(264, 323),
-                new PointF(236, 401),
-                new PointF(202, 371)
+                new PointF(96, 116),
+                new PointF(174, 116),
+                new PointF(174, 396),
+                new PointF(96, 396)
             };
             PointF[] right =
             {
-                new PointF(251, 291),
-                new PointF(302, 150),
-                new PointF(429, 96),
-                new PointF(322, 329),
-                new PointF(250, 401)
+                new PointF(196, 233),
+                new PointF(309, 116),
+                new PointF(418, 116),
+                new PointF(277, 262),
+                new PointF(196, 262)
             };
             using (LinearGradientBrush b = new LinearGradientBrush(new Point(85, 130), new Point(265, 400), Color.FromArgb(255, 185, 117), Color.FromArgb(255, 98, 125)))
                 graphics.FillPolygon(b, left);
             using (LinearGradientBrush b = new LinearGradientBrush(new Point(420, 96), new Point(250, 400), Color.FromArgb(127, 248, 237), Color.FromArgb(67, 137, 249)))
                 graphics.FillPolygon(b, right);
-            using (Brush b = new SolidBrush(Color.FromArgb(219, 255, 249)))
-                graphics.FillPolygon(b, new PointF[] { new PointF(268, 91), new PointF(276, 111), new PointF(296, 119), new PointF(276, 127), new PointF(268, 147), new PointF(260, 127), new PointF(240, 119), new PointF(260, 111) });
+            using (LinearGradientBrush b = new LinearGradientBrush(new Point(196, 269), new Point(421, 396), Color.FromArgb(127, 248, 237), Color.FromArgb(67, 137, 249)))
+                graphics.FillPolygon(b, new PointF[] { new PointF(196, 286), new PointF(259, 269), new PointF(421, 396), new PointF(310, 396) });
             graphics.Restore(saved);
         }
 
@@ -57,7 +56,7 @@ namespace Veylora
                     Draw(g, new RectangleF(0, 0, 512, 512), true);
                 }
 
-                bitmap.Save(Path.Combine(directory, "veylora-logo.png"), System.Drawing.Imaging.ImageFormat.Png);
+                bitmap.Save(Path.Combine(directory, "kinetix-logo.png"), System.Drawing.Imaging.ImageFormat.Png);
             }
 
             using (Bitmap bitmap = new Bitmap(64, 64))
@@ -72,7 +71,7 @@ namespace Veylora
                 try
                 {
                     using (Icon icon = Icon.FromHandle(handle))
-                    using (FileStream output = File.Create(Path.Combine(directory, "veylora.ico")))
+                    using (FileStream output = File.Create(Path.Combine(directory, "kinetix.ico")))
                         icon.Save(output);
                 }
                 finally
@@ -92,12 +91,13 @@ namespace Veylora
                         for (int x = 0; x < 1440; x += 64)
                             g.DrawLine(p, x, 0, x - 200, 500);
                     Draw(g, new RectangleF(80, 70, 350, 350), false);
-                    T.TextAt(g, "VEYLORA", 64, T.Text, 460, 123, FontStyle.Bold);
-                    T.TextAt(g, "SEU MOVIMENTO. SUA ASSINATURA.", 15, T.Mint, 470, 248, FontStyle.Bold);
-                    T.TextAt(g, "Teclado + mouse  →  Controle virtual", 17, T.Muted, 470, 298, FontStyle.Regular);
+                    T.TextAt(g, "KINETIX", 68, T.Text, 460, 101, FontStyle.Bold);
+                    T.TextAt(g, "STUDIO", 22, T.Purple, 470, 211, FontStyle.Bold);
+                    T.TextAt(g, "SEU MOVIMENTO. SUA ASSINATURA.", 15, T.Mint, 470, 285, FontStyle.Bold);
+                    T.TextAt(g, "Teclado + mouse  →  Controle virtual", 17, T.Muted, 470, 332, FontStyle.Regular);
                 }
 
-                banner.Save(Path.Combine(directory, "veylora-banner.png"), System.Drawing.Imaging.ImageFormat.Png);
+                banner.Save(Path.Combine(directory, "kinetix-banner.png"), System.Drawing.Imaging.ImageFormat.Png);
             }
         }
     }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Veylora
+namespace KinetixStudio
 {
     class PresetDialog : Form
     {

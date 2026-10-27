@@ -1,6 +1,6 @@
 ---
 name: Relatar um problema
-about: Informe um erro reproduzível no Veylora
+about: Informe um erro reproduzível no Kinetix Studio
 title: "[Bug] "
 labels: bug
 ---
@@ -12,7 +12,7 @@ labels: bug
 **O que você esperava?**
 
 **Ambiente**
-- Versão do Veylora:
+- Versão do Kinetix Studio:
 - Versão do Windows:
 - Controle de saída (PS4/Xbox):
 - Jogo, se aplicável:

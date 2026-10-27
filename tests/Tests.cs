@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Veylora
+namespace KinetixStudio
 {
     public static class Tests
     {
@@ -188,6 +188,31 @@ namespace Veylora
                 hat.Buttons.Add("Up");
                 hat.Buttons.Add("Right");
                 Assert((VirtualPad.ToDS4(hat).Buttons & 15) == 1, "DS4 diagonal cima/direita usa hat 1");
+                Profile preserved = Profile.Create();
+                preserved.Name = "Meu perfil anterior";
+                preserved.Sensitivity = 83;
+                preserved.Bindings.First(b => b.Action == "Cross").Key = 74;
+                Profile renamedRoundTrip = Store.Deserialize(Store.Serialize(preserved));
+                Assert(renamedRoundTrip.Id == preserved.Id && renamedRoundTrip.Name == preserved.Name && renamedRoundTrip.Sensitivity == 83 && renamedRoundTrip.Bindings.First(b => b.Action == "Cross").Key == 74, "troca de marca preserva identidade e mapeamentos do perfil");
+                string upgrade = Path.Combine(Store.Root, "upgrade-test-" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(upgrade);
+                string oldLog = Path.Combine(upgrade, "veylora.log"), newLog = Path.Combine(upgrade, Store.LogFileName);
+                try
+                {
+                    File.WriteAllText(oldLog, "histórico anterior");
+                    Store.MigrateLegacyLog(upgrade);
+                    Assert(File.ReadAllText(oldLog) == "histórico anterior" && File.ReadAllText(newLog) == "histórico anterior", "migração copia histórico sem apagar original");
+                    File.WriteAllText(newLog, "histórico atual");
+                    Store.MigrateLegacyLog(upgrade);
+                    Assert(File.ReadAllText(newLog) == "histórico atual", "migração não sobrescreve histórico existente");
+                }
+                finally
+                {
+                    File.Delete(oldLog);
+                    File.Delete(newLog);
+                    Directory.Delete(upgrade);
+                }
+
                 if (args.Contains("--integration"))
                     Integration();
                 Console.WriteLine("TOTAL: " + passed + " testes passaram.");

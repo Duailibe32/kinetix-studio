@@ -1,14 +1,14 @@
-<p align="center"><img src="assets/brand/veylora-logo.png" width="124" alt="Logo Veylora" /></p>
-<h1 align="center">Veylora Input Studio</h1>
+<p align="center"><img src="assets/brand/kinetix-logo.png" width="124" alt="Logo Kinetix Studio" /></p>
+<h1 align="center">Kinetix Studio</h1>
 <p align="center"><strong>Seu movimento. Sua assinatura.</strong><br/>Teclado e mouse transformados em um controle virtual para Windows.</p>
-<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.0.0</p>
+<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.1.0</p>
 
-![Estúdio Veylora](docs/veylora-studio.png)
+![Estúdio Kinetix Studio](docs/kinetix-studio.png)
 
 ## Começar
 
-1. Baixe o ZIP em [Releases](https://github.com/Duailibe32/veylora-input-studio/releases/latest) e extraia a pasta inteira.
-2. Abra **Veylora.exe**. Mantenha `ViGEmClient.dll` ao lado do executável.
+1. Baixe o ZIP em [Releases](https://github.com/Duailibe32/kinetix-studio/releases/latest) e extraia a pasta inteira.
+2. Abra **KinetixStudio.exe**. Mantenha `ViGEmClient.dll` ao lado do executável.
 3. Escolha um perfil ou preset. Em **Preferências**, selecione PS4 ou Xbox 360 e, opcionalmente, o executável do jogo.
 4. Pressione **F8** para ativar e volte ao jogo. **F8** pausa; **F12** desliga e libera as entradas.
 5. Use **Testar controle** para ver analógicos, botões e o último comando enviado.
@@ -50,7 +50,7 @@ A roda fica sem mapeamento por padrão. Você pode atribuí-la no editor. O pres
 
 **Windows x64**, .NET Framework 4.8 e **ViGEmBus** instalado. O projeto ViGEm foi arquivado: consulte apenas as [releases oficiais do driver](https://github.com/nefarius/ViGEmBus/releases) e o [comunicado do autor](https://docs.nefarius.at/projects/ViGEm/End-of-Life/). O driver é externo e não faz parte do ZIP.
 
-O Veylora é um aplicativo desktop; não é um aplicativo Android/iOS. A janela é redimensionável em computadores e tablets Windows. Não há banco de dados ou autenticação: os dados são arquivos locais. Nenhum serviço pago, conta online ou telemetria é necessário para usar o programa.
+O Kinetix Studio é um aplicativo desktop; não é um aplicativo Android/iOS. A janela é redimensionável em computadores e tablets Windows. Não há banco de dados ou autenticação: os dados são arquivos locais. Nenhum serviço pago, conta online ou telemetria é necessário para usar o programa.
 
 O mouse usa deslocamentos do cursor do Windows, não Raw Input. A velocidade e a aceleração do Windows afetam sua resposta. O destino é um analógico, com os limites do próprio jogo. Jogos que leem teclado/mouse por outros caminhos podem continuar recebendo entradas nativas mesmo com bloqueio. Jogos elevados podem restringir hooks. A compatibilidade com um título específico ou sistema anticheat não é garantida.
 
@@ -63,22 +63,24 @@ A pasta `data` é criada ao lado do executável:
 - `profiles/`: perfis JSON validados; gravação atômica.
 - `selected.txt`: perfil escolhido.
 - `desktop.json`: preferência da bandeja.
-- `veylora.log`: eventos locais com rotação por tamanho.
+- `kinetix.log`: eventos locais com rotação por tamanho.
 
 Os perfis da versão 1.0 continuam compatíveis. Se atualizar na mesma pasta, eles são encontrados automaticamente. Se extrair em outra pasta, copie a pasta `data` para preservar seus perfis. Perfis antigos mantêm ALT livre até você configurar a caminhada. O pacote de release não inclui perfis ou logs pessoais.
+
+A versão 2.1 adota o nome **Kinetix Studio**. Os executáveis anteriores não são necessários para abrir a nova versão. O histórico `veylora.log`, quando presente, é copiado para `kinetix.log` sem apagar o original ou sobrescrever um histórico novo. Feche a versão anterior antes de ativar o novo aplicativo.
 
 ## Compilar e testar
 
 ```powershell
 pwsh -File .\build.ps1
-.\dist\Veylora.Tests.exe
+.\dist\KinetixStudio.Tests.exe
 ```
 
 O build restaura a biblioteca nativa a partir do pacote oficial versionado, validando seu SHA-256. Não exige SDK .NET ou download durante a compilação. Use PowerShell 7 em Windows com .NET Framework 4.8.
 
 ```powershell
 # Cria temporariamente controles virtuais. Execute fora de uma partida.
-.\dist\Veylora.Tests.exe --integration
+.\dist\KinetixStudio.Tests.exe --integration
 
 # Gera o pacote portátil e seu SHA-256.
 pwsh -File .\build.ps1 -Package
@@ -91,4 +93,4 @@ A automação Windows compila, executa os testes sem driver e preserva o ZIP com
 
 ## Identidade e licenças
 
-A logo está em SVG, PNG e ICO em `assets/brand`. O projeto privado é mantido por **Duailibe32**, com todos os direitos reservados. As licenças de terceiros estão em [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). O Veylora não é afiliado a Sony, Microsoft, Nefarius ou reWASD.
+A logo está em SVG, PNG e ICO em `assets/brand`. O projeto privado é mantido por **Duailibe32**, com todos os direitos reservados. As licenças de terceiros estão em [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). O Kinetix Studio não é afiliado a Sony, Microsoft, Nefarius ou reWASD.

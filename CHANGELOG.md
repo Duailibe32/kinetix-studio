@@ -1,5 +1,16 @@
 # Histórico
 
+## 2.1.0 — Kinetix Studio · 27/10/2026
+
+- Novo nome oficial: Kinetix Studio; executável KinetixStudio.exe.
+- Logo geométrica em K, ícone, banner, telas e documentação atualizados.
+- Repositório privado renomeado, preservando histórico e releases anteriores.
+- Perfis, seleção e preferências continuam na mesma pasta data, com o mesmo formato.
+- Histórico de eventos anterior copiado sem apagar o original; cópia existente não é sobrescrita.
+- Proteção contra execução simultânea com a versão anterior.
+- Nenhuma alteração nos mapeamentos ou no motor de controle virtual.
+- Restauração da dependência corrigida para compilar repetidamente na mesma sessão sem tentar sobrescrever uma DLL carregada.
+
 ## 2.0.0 — Veylora · 27/10/2026
 
 - Nova marca, logo vetorial, ícone, banner e estúdio em coral e azul-gelo.

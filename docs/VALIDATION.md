@@ -1,14 +1,14 @@
-# Revisão e validação — Veylora 2.0.0
+# Revisão e validação — Kinetix Studio 2.1.0
 
 Data: 27/10/2026. Plataforma: Windows x64.
 
 ## Resultado
 
 - Compilação normal e compilação em pasta isolada concluídas.
-- **32 verificações de lógica** aprovadas.
+- **35 verificações de lógica**, incluindo preservação de perfis e migração de histórico, aprovadas.
 - **4 verificações de integração** com o driver instalado aprovadas.
 - As sete telas foram renderizadas e inspecionadas.
-- Na interface aberta, conexão ao driver, ativação por F8, desligamento por F12, navegação, seletores de PS4 e intervalo, campo de busca e filtro por “pular” foram conferidos.
+- Os testes interativos de conexão ao driver, F8/F12, seletores e busca foram feitos na versão 2.0; a versão 2.1 mantém esse motor e esses fluxos, com atualização de marca e nova renderização das sete telas.
 
 ## O que os testes cobrem
 

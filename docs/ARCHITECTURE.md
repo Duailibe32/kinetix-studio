@@ -1,4 +1,4 @@
-# Arquitetura do Veylora
+# Arquitetura do Kinetix Studio
 
 Aplicação WinForms x64 para .NET Framework, sem servidor, telemetria ou conexão de rede durante o uso.
 
@@ -25,7 +25,7 @@ O temporizador usa uma geração por sessão e proteção contra execução conc
 
 ## Foco e cursor
 
-O Veylora pausa a captura em sua própria interface, exceto na tela explícita de teste. Nesta tela, o cursor fica livre. Um filtro opcional de jogo compara o nome e o caminho completo do processo; a decisão é refeita ao mudar a janela em foco. Processos inacessíveis não são considerados compatíveis.
+O Kinetix Studio pausa a captura em sua própria interface, exceto na tela explícita de teste. Nesta tela, o cursor fica livre. Um filtro opcional de jogo compara o nome e o caminho completo do processo; a decisão é refeita ao mudar a janela em foco. Processos inacessíveis não são considerados compatíveis.
 
 O mouse usa deslocamentos do cursor do Windows. Não há Raw Input, supressão de entrada em nível de driver, ocultação de dispositivos físicos ou promessa de funcionar em todo jogo. Jogos podem ler teclado e mouse por caminhos que hooks de usuário não bloqueiam.
 

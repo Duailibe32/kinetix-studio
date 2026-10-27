@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Veylora
+namespace KinetixStudio
 {
     [DataContract]
     public class DesktopSettings
@@ -396,6 +396,14 @@ namespace Veylora
 
     public static class Store
     {
+        public const string LogFileName = "kinetix.log";
+        public static void MigrateLegacyLog(string directory)
+        {
+            string oldLog = Path.Combine(directory, "veylora.log"), newLog = Path.Combine(directory, LogFileName);
+            if (File.Exists(oldLog) && !File.Exists(newLog))
+                File.Copy(oldLog, newLog, false);
+        }
+
         public static readonly string Root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
         static string DirectoryPath
         {
@@ -477,6 +485,19 @@ namespace Veylora
 
         public static Profile Current()
         {
+            try
+            {
+                MigrateLegacyLog(Root);
+            }
+            catch (IOException ex)
+            {
+                Log("Histórico anterior preservado: " + ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Log("Histórico anterior preservado: " + ex.Message);
+            }
+
             List<Profile> ps = All();
             string id = File.Exists(Path.Combine(Root, "selected.txt")) ? File.ReadAllText(Path.Combine(Root, "selected.txt")) : "";
             Profile p = ps.FirstOrDefault(x => x.Id == id) ?? ps.FirstOrDefault();
@@ -501,7 +522,7 @@ namespace Veylora
             try
             {
                 Directory.CreateDirectory(Root);
-                string f = Path.Combine(Root, "veylora.log");
+                string f = Path.Combine(Root, LogFileName);
                 if (File.Exists(f) && new FileInfo(f).Length > 1048576)
                     File.Move(f, f + "." + DateTime.Now.ToString("yyyyMMddHHmmss"));
                 File.AppendAllText(f, DateTime.Now.ToString("s") + " " + msg + Environment.NewLine);

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Veylora
+namespace KinetixStudio
 {
     public class MainWindow : Form
     {
@@ -34,7 +34,7 @@ namespace Veylora
         public MainWindow(bool render)
         {
             renderOnly = render;
-            Text = "Veylora — Seu movimento. Sua assinatura.";
+            Text = "Kinetix Studio — Seu movimento. Sua assinatura.";
             BackColor = T.Bg;
             ForeColor = T.Text;
             Font = T.Font(10, FontStyle.Regular);
@@ -46,7 +46,7 @@ namespace Veylora
             AutoScaleMode = AutoScaleMode.Dpi;
             try
             {
-                Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "veylora.ico"));
+                Icon = new Icon(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "kinetix.ico"));
             }
             catch
             {
@@ -88,7 +88,8 @@ namespace Veylora
             {
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 Brand.Draw(e.Graphics, new RectangleF(15, 21, 62, 62), true);
-                T.TextAt(e.Graphics, "VEYLORA", 15, T.Text, 83, 34, FontStyle.Bold);
+                T.TextAt(e.Graphics, "KINETIX", 16, T.Text, 83, 24, FontStyle.Bold);
+                T.TextAt(e.Graphics, "STUDIO", 9, T.Purple, 85, 56, FontStyle.Bold);
                 T.TextAt(e.Graphics, "INPUT STUDIO", 7, T.Purple, 24, 102, FontStyle.Bold);
                 using (Pen p = new Pen(T.Line))
                     e.Graphics.DrawLine(p, 24, 128, 200, 128);
@@ -128,7 +129,7 @@ namespace Veylora
             tip.Controls.Add(T.Label("NO SEU RITMO", 8, T.Mint, 15, 18, 150, 20));
             tip.Controls.Add(T.Label("F8   Ativar / pausar\n\nF12  Desligar agora", 9, T.Text, 15, 51, 150, 82));
             sidebar.Controls.Add(tip);
-            sidebar.Controls.Add(T.Label("VEYLORA  /  " + Brand.Version, 8, T.Muted, 24, 704, 180, 22));
+            sidebar.Controls.Add(T.Label("KINETIX STUDIO  /  " + Brand.Version, 7, T.Muted, 24, 704, 184, 22));
             Label title = T.Label("Estúdio de controle", 17, T.Text, 28, 22, 470, 31);
             title.Font = T.Font(17, FontStyle.Bold);
             header.Controls.Add(title);
@@ -220,7 +221,7 @@ namespace Veylora
                     if (safetyHook == IntPtr.Zero)
                     {
                         power.Enabled = false;
-                        Notify("Não foi possível preparar os atalhos de segurança. Reabra o Veylora.", true);
+                        Notify("Não foi possível preparar os atalhos de segurança. Reabra o Kinetix Studio.", true);
                     }
 
                     Probe();
@@ -229,7 +230,7 @@ namespace Veylora
             if (!renderOnly)
             {
                 ContextMenuStrip menu = new ContextMenuStrip();
-                menu.Items.Add("Abrir Veylora", null, (s, e) => RestoreWindow());
+                menu.Items.Add("Abrir Kinetix Studio", null, (s, e) => RestoreWindow());
                 menu.Items.Add("Ativar / pausar · F8", null, (s, e) => Toggle());
                 menu.Items.Add("Desligar controle · F12", null, (s, e) =>
                 {
@@ -241,7 +242,7 @@ namespace Veylora
                 tray = new NotifyIcon
                 {
                     Icon = Icon,
-                    Text = "Veylora · Controle desativado",
+                    Text = "Kinetix Studio · Controle desativado",
                     Visible = true,
                     ContextMenuStrip = menu
                 };
@@ -362,7 +363,7 @@ namespace Veylora
             {
                 engine.Stop();
                 Store.Log(ex.ToString());
-                Notify(ex is DllNotFoundException ? "ViGEmClient.dll não encontrada. Use a pasta completa do Veylora." : ex.Message, true);
+                Notify(ex is DllNotFoundException ? "ViGEmClient.dll não encontrada. Use a pasta completa do Kinetix Studio." : ex.Message, true);
             }
 
             SetPower();
@@ -374,7 +375,7 @@ namespace Veylora
             power.Primary = !engine.Running;
             power.Invalidate();
             if (tray != null)
-                tray.Text = engine.Running ? "Veylora · Controle ativo" : "Veylora · Controle desativado";
+                tray.Text = engine.Running ? "Kinetix Studio · Controle ativo" : "Kinetix Studio · Controle desativado";
             RefreshLive();
         }
 
@@ -502,7 +503,7 @@ namespace Veylora
         void Dashboard()
         {
             int w = Available;
-            Heading("BEM-VINDO AO VEYLORA", "Cada movimento tem a sua assinatura.", "Um estúdio para transformar teclado e mouse no controle que combina com você.");
+            Heading("BEM-VINDO AO KINETIX STUDIO", "Cada movimento tem a sua assinatura.", "Um estúdio para transformar teclado e mouse no controle que combina com você.");
             int left = (int)(w * .56);
             SoftPanel hero = Card(28, 132, left, 299);
             hero.Decorative = true;
@@ -541,7 +542,7 @@ namespace Veylora
             hzLabel.Font = T.Font(20, FontStyle.Bold);
             rate.Controls.Add(hzLabel);
             rate.Controls.Add(T.Label("Ciclos medidos por segundo", 8, T.Muted, 20, 87, cw - 40, 20));
-            footer = T.Label("F8 para ativar ou pausar. F12 para desligar imediatamente. A captura pausa enquanto você edita no Veylora.", 9, T.Muted, 29, 598, w, 45);
+            footer = T.Label("F8 para ativar ou pausar. F12 para desligar imediatamente. A captura pausa enquanto você edita no Kinetix Studio.", 9, T.Muted, 29, 598, w, 45);
             content.Controls.Add(footer);
         }
 
@@ -557,7 +558,7 @@ namespace Veylora
             top.Controls.Add(search);
             Button(top, "Restaurar padrão", w - 190, 11, 170, () =>
             {
-                if (MessageBox.Show(this, "Restaurar todas as teclas deste perfil?", "Veylora", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(this, "Restaurar todas as teclas deste perfil?", "Kinetix Studio", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     profile.Bindings = Profile.Create().Bindings;
                     Changed();
@@ -850,7 +851,7 @@ namespace Veylora
                         return;
                     }
 
-                    if (MessageBox.Show(this, "Excluir o perfil “" + item.Name + "”?", "Veylora", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (MessageBox.Show(this, "Excluir o perfil “" + item.Name + "”?", "Kinetix Studio", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         if (item.Id == profile.Id)
                             engine.Stop();
@@ -879,7 +880,7 @@ namespace Veylora
         {
             using (OpenFileDialog d = new OpenFileDialog
             {
-                Filter = "Perfil Veylora (*.json)|*.json",
+                Filter = "Perfil Kinetix Studio (*.json)|*.json",
                 Title = "Importar perfil"
             }
 
@@ -910,8 +911,8 @@ namespace Veylora
         {
             using (SaveFileDialog d = new SaveFileDialog
             {
-                Filter = "Perfil Veylora (*.json)|*.json",
-                FileName = "Veylora-perfil.json",
+                Filter = "Perfil Kinetix Studio (*.json)|*.json",
+                FileName = "KinetixStudio-perfil.json",
                 Title = "Exportar perfil"
             }
 
@@ -953,7 +954,7 @@ namespace Veylora
         void Preferences()
         {
             int w = Available;
-            Heading("OS DETALHES FAZEM DIFERENÇA", "Seu Veylora, do seu jeito.", "As preferências abaixo pertencem ao perfil selecionado. Alterações pausam o controle e são salvas automaticamente.");
+            Heading("OS DETALHES FAZEM DIFERENÇA", "Seu Kinetix Studio, do seu jeito.", "As preferências abaixo pertencem ao perfil selecionado. Alterações pausam o controle e são salvas automaticamente.");
             SoftPanel c = Card(28, 130, w, 145);
             c.Controls.Add(T.Label("Nome do perfil", 10, T.Muted, 22, 19, 200, 22));
             TextBox name = T.Input(profile.Name, w - 225);
@@ -991,7 +992,7 @@ namespace Veylora
                 profile.BlockMouse = mouse.Checked;
                 Changed();
             };
-            capture.Controls.Add(T.Label("F8 e F12 continuam disponíveis. No Veylora, o cursor permanece livre.", 8, T.Muted, 23, 96, w - 46, 22));
+            capture.Controls.Add(T.Label("F8 e F12 continuam disponíveis. No Kinetix Studio, o cursor permanece livre.", 8, T.Muted, 23, 96, w - 46, 22));
             SoftPanel game = Card(28, 439, w, 110);
             game.Controls.Add(T.Label("Onde ativar a captura", 11, T.Text, 22, 16, w - 44, 24));
             Label path = T.Label(String.IsNullOrEmpty(profile.GamePath) ? "Qualquer jogo ou aplicativo em primeiro plano" : Path.GetFileName(profile.GamePath), 9, T.Muted, 22, 49, w - 360, 42);
@@ -1105,7 +1106,7 @@ namespace Veylora
             };
             try
             {
-                string path = Path.Combine(Store.Root, "veylora.log");
+                string path = Path.Combine(Store.Root, Store.LogFileName);
                 log.Text = File.Exists(path) ? String.Join(Environment.NewLine, File.ReadLines(path).Reverse().Take(40).Reverse().ToArray()) : "Nenhum evento registrado.";
             }
             catch (Exception ex)
