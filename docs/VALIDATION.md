@@ -1,4 +1,6 @@
-# Revisão e validação — Kinetix Studio 2.2.0
+# Revisão e validação — Kinetix Studio 2.2.1
+
+Revisão 2.2.1: 54 verificações de lógica, quatro de integração com driver, três de hooks reais com suavização e 18 de instalação/atualização. Veja [correção da mira](AIM-FIX.md). Os números da seção seguinte são o registro histórico da versão 2.2.0.
 
 Revisão atual: 44 verificações de lógica, quatro de integração, três de hooks reais e 18 de instalação aprovadas. Perfis existentes importados para AppData com conferência dos originais por hash. Veja [otimização](OPTIMIZATION.md) para medições, metodologia, comandos e limites. A seção abaixo registra a revisão anterior 2.1; os testes atuais ampliam essa cobertura.
 

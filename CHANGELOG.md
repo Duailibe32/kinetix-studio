@@ -1,5 +1,13 @@
 # Histórico
 
+## 2.2.1 — Estabilidade da mira · 27/10/2026
+
+- Compensação da zona morta entra gradualmente nos micromovimentos, eliminando o salto instantâneo para 5–7% do analógico.
+- Removido o recorte independente dos eixos que deformava movimentos quase horizontais ou verticais.
+- Janela ponderada de até 16 ms regulariza os intervalos entre eventos de mouse quando há suavização; suavização zero mantém resposta direta.
+- Janela reiniciada ao pausar, reiniciar ou trocar o foco permitido, sem reaproveitar movimentos antigos.
+- Perfis e configurações mantidos. Dez testes adicionais de regressão; atualização e emulação revalidadas.
+
 ## 2.2.0 — Otimização e instalação · 27/10/2026
 
 - Release x64 otimizado; distribuição restrita a quatro arquivos, sem testes e ferramentas.

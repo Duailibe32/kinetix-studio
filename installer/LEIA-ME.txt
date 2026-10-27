@@ -1,4 +1,4 @@
-KINETIX STUDIO 2.2
+KINETIX STUDIO 2.2.1
 
 Windows x64, .NET Framework 4.8 ou compatível (como 4.8.1).
 Abra KinetixStudio.exe. F8 ativa/pausa; F12 desliga imediatamente.

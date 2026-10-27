@@ -635,14 +635,21 @@ namespace KinetixStudio
                 double alpha = p.Smoothing == 0 ? 1 : 1 - Math.Exp(-dt * 1000 / p.Smoothing);
                 sx += alpha * (x - sx);
                 sy += alpha * (y - sy);
-                if (Math.Abs(sx) < .002)
-                    sx = 0;
-                if (Math.Abs(sy) < .002)
-                    sy = 0;
                 length = Math.Sqrt(sx * sx + sy * sy);
+                // Use a radial floor: clipping each component separately changes
+                // the direction of shallow diagonals and causes axis snapping.
+                if (length < .0001)
+                {
+                    sx = sy = 0;
+                    length = 0;
+                }
                 if (length > 0)
                 {
-                    double magnitude = p.Deadzone / 100.0 + (1 - p.Deadzone / 100.0) * Math.Pow(Math.Min(1, length), p.Curve / 100.0);
+                    // Fade compensation in continuously instead of jumping from
+                    // neutral straight to Deadzone for every tiny movement.
+                    double blend = Math.Min(1, length / .05);
+                    blend = blend * blend * (3 - 2 * blend);
+                    double magnitude = p.Deadzone / 100.0 * blend + (1 - p.Deadzone / 100.0) * Math.Pow(Math.Min(1, length), p.Curve / 100.0);
                     double ox = sx / length * magnitude, oy = sy / length * magnitude;
                     if (p.MouseStick == "Left")
                     {

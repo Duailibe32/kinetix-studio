@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/brand/kinetix-logo.png" width="124" alt="Logo Kinetix Studio" /></p>
 <h1 align="center">Kinetix Studio</h1>
 <p align="center"><strong>Seu movimento. Sua assinatura.</strong><br/>Teclado e mouse transformados em um controle virtual para Windows.</p>
-<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.2.0</p>
+<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.2.1</p>
 
 ![Estúdio Kinetix Studio](docs/kinetix-studio.png)
 

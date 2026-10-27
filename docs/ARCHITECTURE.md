@@ -17,7 +17,7 @@ Aplicação WinForms x64 para .NET Framework, sem servidor, telemetria ou conex�
 1. O hook verifica a janela em foco e a regra do perfil.
 2. Teclas e botões atualizam um snapshot; transições são enfileiradas para não serem perdidas entre ciclos.
 3. A roda produz um pulso digital de 60 ms; eventos repetidos criam novas transições.
-4. O motor calcula WASD normalizado, caminhada opcional e mouse suavizado.
+4. O motor calcula WASD normalizado, caminhada opcional e mouse suavizado. Quando a suavização é maior que zero, `MouseVelocityWindow` regulariza deslocamentos numa janela ponderada de até 16 ms antes do filtro exponencial. Suavização zero mantém o caminho direto. A compensação de zona morta cresce continuamente perto do neutro; o corte mínimo é radial para preservar a direção.
 5. Relatórios diferentes são enviados imediatamente no ciclo; estados iguais têm keepalive a cada 250 ms.
 6. Pausa, perda de foco permitido e encerramento neutralizam a saída.
 

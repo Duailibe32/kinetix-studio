@@ -62,6 +62,7 @@ namespace KinetixStudio
                 p.InvertY = true;
                 s = Mapper.Map(p, keys, 0, -20, .008, ref sx, ref sy);
                 Assert(s.RY < 0, "inversão Y");
+                AimRegression();
                 p.MouseEnabled = false;
                 s = Mapper.Map(p, keys, 100, 100, .008, ref sx, ref sy);
                 Assert(s.RX == 0 && s.RY == 0, "mouse desativado neutraliza RS");
@@ -344,6 +345,63 @@ namespace KinetixStudio
             }
         }
 
+        static void AimRegression()
+        {
+            var p = Profile.Create();
+            p.Smoothing = 0;
+            p.Deadzone = 7;
+            var keys = new bool[258];
+            double sx = 0, sy = 0;
+            var small = Mapper.Map(p, keys, .1, 0, .008, ref sx, ref sy);
+            Assert(small.RX > 0 && small.RX < .01, "micromovimento não salta diretamente para 7% do analógico");
+            sx = sy = 0;
+            var diagonal = Mapper.Map(p, keys, 10, -.02, .008, ref sx, ref sy);
+            Assert(diagonal.RX > 0 && diagonal.RY > 0, "direção rasa mantém eixo menor sem recorte independente");
+            var filter = new MouseVelocityWindow();
+            double min = Double.MaxValue, max = 0;
+            bool diagonalPreserved = true;
+            for (int i = 0; i < 40; i++)
+            {
+                double x = i % 2 == 0 ? 8 : 0, y = -x;
+                filter.Apply(ref x, ref y, .004, true);
+                if (i > 8) { min = Math.Min(min, x); max = Math.Max(max, x); }
+                diagonalPreserved &= Math.Abs(x + y) < .000001;
+            }
+            Assert(diagonalPreserved, "filtro preserva proporção diagonal em toda a sequência");
+            Assert(max - min < .000001 && min > 0, "mouse 125 Hz não alterna mira e neutro no motor de 250 Hz");
+            for (int i = 0; i < 4; i++) { double x = 0, y = 0; filter.Apply(ref x, ref y, .004, true); if (i == 3) Assert(x == 0 && y == 0, "janela de movimento zera após 16 ms sem entrada"); }
+            filter.Reset();
+            double directX = 8, directY = -4;
+            filter.Apply(ref directX, ref directY, .004, false);
+            Assert(directX == 8 && directY == -4, "suavização zero preserva resposta direta sem janela adicional");
+            filter.Reset();
+            bool timeWeighted = true;
+            foreach (double dt in new double[] { .005, .011, .004, .007, .009 })
+            {
+                double x = 1000 * dt, y = -500 * dt;
+                filter.Apply(ref x, ref y, dt, true);
+                timeWeighted &= Math.Abs(x / dt - 1000) < .000001 && Math.Abs(y / dt + 500) < .000001;
+            }
+            Assert(timeWeighted, "velocidade constante permanece igual com intervalos irregulares");
+            filter.Reset();
+            double resetX = 0, resetY = 0;
+            filter.Apply(ref resetX, ref resetY, .004, true);
+            Assert(resetX == 0 && resetY == 0, "reinício do filtro não reaproveita movimento anterior");
+            sx = sy = 0;
+            var full = Mapper.Map(p, keys, 10000, 0, .008, ref sx, ref sy);
+            Assert(full.RX == 1 && full.RY == 0, "compensação gradual mantém alcance completo do analógico");
+            p.Smoothing = 30;
+            filter.Reset(); sx = sy = 0;
+            PadState stopped = null;
+            for (int i = 0; i < 70; i++)
+            {
+                double x = i < 8 ? 8 : 0, y = -x;
+                filter.Apply(ref x, ref y, .008, true);
+                stopped = Mapper.Map(p, keys, x, y, .008, ref sx, ref sy);
+            }
+            Assert(stopped.RX == 0 && stopped.RY == 0, "janela e suavização juntas voltam ao neutro sem entrada");
+        }
+
         static void InputIntegration()
         {
             var occupied = new HashSet<uint>();
@@ -375,7 +433,7 @@ namespace KinetixStudio
                     throw new InvalidOperationException("Teste de entrada não executado: a janela de validação não recebeu foco.");
                 Profile p = Profile.Create();
                 p.Controller = "X360";
-                p.Smoothing = 0;
+                p.Smoothing = 30;
                 p.Deadzone = 0;
                 p.BlockMouse = false;
                 System.Windows.Forms.Cursor.Position = form.PointToScreen(new System.Drawing.Point(80, 80));

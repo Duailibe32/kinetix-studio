@@ -8,7 +8,7 @@ namespace KinetixStudio
 {
     public static class Brand
     {
-        public const string Version = "2.2.0";
+        public const string Version = "2.2.1";
         [DllImport("user32.dll")]
         static extern bool DestroyIcon(IntPtr handle);
         public static void Draw(Graphics graphics, RectangleF bounds, bool tile)

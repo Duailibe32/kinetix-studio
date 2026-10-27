@@ -1,4 +1,4 @@
-param([string]$BaselineZip='')
+param([string]$BaselineZip='', [string]$ReferenceVersion='2.1.0')
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $root
@@ -16,8 +16,8 @@ function Assert([bool]$condition,[string]$message){if(-not $condition){throw $me
 function RunSetup([string]$path,[string]$log){$arguments='/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /TASKS="desktopicon" /DIR="'+$target+'" /LOG="'+$log+'"';$p=Start-Process -FilePath $path -ArgumentList $arguments -WindowStyle Hidden -Wait -PassThru;if($null -ne $p.ExitCode -and $p.ExitCode -ne 0){throw ('Setup falhou: '+$p.ExitCode+'; '+$log)}}
 try{
     $oldPayload=Join-Path $work 'before-payload'
-    $baselineVersion='2.2.0';$baselineSource='current-payload-smoke'
-    if($BaselineZip){Expand-Archive -LiteralPath (Join-Path $root $BaselineZip) -DestinationPath $oldPayload -Force;$baselineVersion='2.1.0';$baselineSource='2.1.0-portable'}else{$oldPayload=Join-Path $root '.build\payload'}
+    $baselineVersion='2.2.1';$baselineSource='current-payload-smoke'
+    if($BaselineZip){Expand-Archive -LiteralPath (Join-Path $root $BaselineZip) -DestinationPath $oldPayload -Force;$baselineVersion=$ReferenceVersion;$baselineSource=$ReferenceVersion+'-portable'}else{$oldPayload=Join-Path $root '.build\payload'}
     & "$PSScriptRoot\build-installer.ps1" -PayloadDir $oldPayload -TestMode -AppVersion $baselineVersion -OutputDir $relativeWork -OutputName 'Before-Setup'
     & "$PSScriptRoot\build-installer.ps1" -PayloadDir (Join-Path $root '.build\payload') -TestMode -OutputDir $relativeWork -OutputName 'After-Setup'
     RunSetup (Join-Path $work 'Before-Setup.exe') (Join-Path $work 'install-before.log')

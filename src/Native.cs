@@ -266,6 +266,7 @@ namespace KinetixStudio
         readonly bool[] keys = new bool[258], mapped = new bool[258];
         readonly uint ownPid = (uint)Process.GetCurrentProcess().Id;
         readonly Queue<bool[]> edges = new Queue<bool[]>();
+        readonly MouseVelocityWindow mouseWindow = new MouseVelocityWindow();
         string lastCommand = "nenhum", lastButton = "nenhum";
         Native.HookProc keyProc, mouseProc;
         IntPtr keyHook, mouseHook;
@@ -365,6 +366,7 @@ namespace KinetixStudio
                         throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Não foi possível capturar teclado e mouse.");
                     Array.Clear(keys, 0, keys.Length);
                     dx = dy = sx = sy = 0;
+                    mouseWindow.Reset();
                     Native.GetCursorPos(out lastMouse);
                     lastTick = rateStart = Stopwatch.GetTimestamp();
                     running = true;
@@ -622,6 +624,7 @@ namespace KinetixStudio
                             Array.Clear(keys, 0, keys.Length);
                             edges.Clear();
                             dx = dy = sx = sy = 0;
+                            mouseWindow.Reset();
                             Native.GetCursorPos(out lastMouse);
                         }
 
@@ -647,7 +650,10 @@ namespace KinetixStudio
                             Submit(edge);
                         }
 
-                        state = gate ? Mapper.Map(profile, keys, dx, dy, dt, ref sx, ref sy) : neutral;
+                        double moveX = dx, moveY = dy;
+                        if (gate)
+                            mouseWindow.Apply(ref moveX, ref moveY, dt, profile.MouseEnabled && profile.Smoothing > 0);
+                        state = gate ? Mapper.Map(profile, keys, moveX, moveY, dt, ref sx, ref sy) : neutral;
                         dx = dy = 0;
                         Submit(state);
                         ticks++;
@@ -718,6 +724,7 @@ namespace KinetixStudio
             ActualHz = 0;
             ticks = 0;
             dx = dy = sx = sy = 0;
+            mouseWindow.Reset();
             wheelUpUntil = wheelDownUntil = 0;
         }
 
