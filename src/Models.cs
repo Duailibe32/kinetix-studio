@@ -95,6 +95,10 @@ namespace KinetixStudio
         [DataMember]
         public int VerticalSensitivity = 100;
         [DataMember]
+        public int NoiseFilter;
+        [DataMember]
+        public int AdsSensitivity = 100;
+        [DataMember]
         public string MouseStick = "Right";
         [DataMember]
         public int WalkKey = 164;
@@ -105,6 +109,8 @@ namespace KinetixStudio
         {
             UpdateInterval = 8;
             VerticalSensitivity = 100;
+            NoiseFilter = 0;
+            AdsSensitivity = 100;
             MouseStick = "Right";
             WalkKey = 0;
             WalkPercent = 45;
@@ -127,6 +133,17 @@ namespace KinetixStudio
                 p.Sensitivity = 75;
                 p.Smoothing = 40;
                 p.Curve = 100;
+            }
+
+            if (kind == "Mira estável")
+            {
+                p.Controller = "X360";
+                p.Sensitivity = 45;
+                p.Smoothing = 24;
+                p.Curve = 125;
+                p.Deadzone = 5;
+                p.NoiseFilter = 10;
+                p.AdsSensitivity = 60;
             }
 
             if (kind == "Corrida")
@@ -223,6 +240,8 @@ namespace KinetixStudio
 
             if (Sensitivity < 5 || Sensitivity > 200 || Smoothing < 0 || Smoothing > 150 || Deadzone < 0 || Deadzone > 30 || Curve < 50 || Curve > 200)
                 throw new InvalidDataException("Ajustes do mouse fora dos limites.");
+            if (NoiseFilter < 0 || NoiseFilter > 30 || AdsSensitivity < 10 || AdsSensitivity > 100)
+                throw new InvalidDataException("Filtro de ruído ou sensibilidade ao mirar fora dos limites.");
             if (GamePath == null)
                 GamePath = "";
             if (GamePath.Length > 512)
@@ -625,6 +644,11 @@ namespace KinetixStudio
             {
                 double x = dx / Math.Max(.001, dt) * p.Sensitivity / 180000.0;
                 double y = -dy / Math.Max(.001, dt) * p.Sensitivity / 180000.0 * (p.InvertY ? -1 : 1) * p.VerticalSensitivity / 100.0;
+                if (p.MouseStick == "Right" && state.Has("L2"))
+                {
+                    x *= p.AdsSensitivity / 100.0;
+                    y *= p.AdsSensitivity / 100.0;
+                }
                 length = Math.Sqrt(x * x + y * y);
                 if (length > 1)
                 {
@@ -645,11 +669,19 @@ namespace KinetixStudio
                 }
                 if (length > 0)
                 {
+                    double filteredLength = length;
+                    if (p.NoiseFilter > 0)
+                    {
+                        // Continuous radial attenuation, not a per-axis cutoff.
+                        // At/above the threshold, preserve the original movement.
+                        double noiseBlend = Math.Min(1, length / (p.NoiseFilter / 1000.0));
+                        filteredLength *= noiseBlend * noiseBlend * (3 - 2 * noiseBlend);
+                    }
                     // Fade compensation in continuously instead of jumping from
                     // neutral straight to Deadzone for every tiny movement.
-                    double blend = Math.Min(1, length / .05);
+                    double blend = Math.Min(1, filteredLength / .05);
                     blend = blend * blend * (3 - 2 * blend);
-                    double magnitude = p.Deadzone / 100.0 * blend + (1 - p.Deadzone / 100.0) * Math.Pow(Math.Min(1, length), p.Curve / 100.0);
+                    double magnitude = p.Deadzone / 100.0 * blend + (1 - p.Deadzone / 100.0) * Math.Pow(Math.Min(1, filteredLength), p.Curve / 100.0);
                     double ox = sx / length * magnitude, oy = sy / length * magnitude;
                     if (p.MouseStick == "Left")
                     {

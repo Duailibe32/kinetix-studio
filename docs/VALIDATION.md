@@ -1,4 +1,6 @@
-# Revisão e validação — Kinetix Studio 2.2.1
+# Revisão e validação — Kinetix Studio 2.3.0
+
+Revisão 2.3.0: 67 testes de lógica e seis de integração com o driver passaram, incluindo leitura independente por XInput dos ajustes de filtro/ADS e liberação para neutro. Duas verificações da interface confirmaram persistência dos sliders e seleção do preset, com renderização inspecionada. As 18 verificações de instalação/atualização passaram. Veja [ajustes de precisão](PRECISION.md). As seções seguintes registram as versões anteriores.
 
 Revisão 2.2.1: 54 verificações de lógica, quatro de integração com driver, três de hooks reais com suavização e 18 de instalação/atualização. Veja [correção da mira](AIM-FIX.md). Os números da seção seguinte são o registro histórico da versão 2.2.0.
 

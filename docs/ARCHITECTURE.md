@@ -23,6 +23,8 @@ Aplicação WinForms x64 para .NET Framework, sem servidor, telemetria ou conex�
 
 O temporizador usa uma geração por sessão e proteção contra execução concorrente. O lock protege os dados compartilhados e o ciclo nativo. O intervalo solicitado não é uma promessa de latência ou frequência efetiva; a interface informa ciclos medidos.
 
+Desde 2.3, o multiplicador ADS é aplicado à velocidade do mouse antes da suavização, somente no analógico direito e enquanto a ação L2 estiver ativa. Depois da suavização, o filtro de ruído opcional atenua radialmente as amplitudes pequenas com uma transição contínua. O zero desativa o filtro; movimentos acima do limiar conservam a resposta anterior. Esses ajustes não consultam o jogo nem detectam alvos.
+
 ## Foco e cursor
 
 O Kinetix Studio pausa a captura em sua própria interface, exceto na tela explícita de teste. Nesta tela, o cursor fica livre. Um filtro opcional de jogo compara o nome e o caminho completo do processo; a decisão é refeita ao mudar a janela em foco. Processos inacessíveis não são considerados compatíveis.

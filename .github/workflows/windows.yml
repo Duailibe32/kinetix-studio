@@ -26,8 +26,8 @@ jobs:
         with:
           name: KinetixStudio-Windows-x64
           path: |
-            KinetixStudio-2.2.1-win-x64.zip
-            KinetixStudio-2.2.1-win-x64.zip.sha256
+            KinetixStudio-*-win-x64.zip
+            KinetixStudio-*-win-x64.zip.sha256
             installer-output/KinetixStudio-Setup.exe
             installer-output/KinetixStudio-Setup.exe.sha256
           if-no-files-found: error

@@ -1,7 +1,7 @@
 <p align="center"><img src="assets/brand/kinetix-logo.png" width="124" alt="Logo Kinetix Studio" /></p>
 <h1 align="center">Kinetix Studio</h1>
 <p align="center"><strong>Seu movimento. Sua assinatura.</strong><br/>Teclado e mouse transformados em um controle virtual para Windows.</p>
-<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.2.1</p>
+<p align="center">Windows x64 · PS4 / Xbox 360 · Português · Offline · Versão 2.3.0</p>
 
 ![Estúdio Kinetix Studio](docs/kinetix-studio.png)
 
@@ -23,6 +23,7 @@ O aplicativo começa desativado. A captura pausa dentro do estúdio, exceto na t
 - WASD com diagonais normalizadas; caminhada lenta por modificador configurável.
 - Mouse para analógico direito ou esquerdo; sensibilidade, proporção vertical, inversão, suavização, curva e zona morta de saída.
 - Presets de **Precisão FPS**, **Exploração** e **Corrida**.
+- Preset adicional **Mira estável**, filtro de ruído radial e sensibilidade separada ao manter LT/L2 pressionado. Os ajustes ficam em **Mouse e mira**, ao rolar a página para baixo. Perfis antigos mantêm filtro zero e sensibilidade ao mirar em 100%.
 - Criar, duplicar, selecionar, excluir, importar e exportar perfis JSON.
 - Bloqueio opcional das teclas remapeadas e do cursor; filtro de captura por executável.
 - Intervalos solicitados de 4, 8 ou 16 ms, com ciclos reais medidos no estúdio.

@@ -17,24 +17,26 @@ namespace KinetixStudio
             Text = "Escolha seu ponto de partida";
             BackColor = T.Bg;
             ForeColor = T.Text;
-            ClientSize = new Size(530, 365);
+            ClientSize = new Size(530, 450);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = MinimizeBox = false;
-            Controls.Add(T.Label("Um perfil pronto para o seu estilo.", 19, T.Text, 24, 21, 480, 40));
+            Controls.Add(T.Label("Escolha seu perfil inicial.", 19, T.Text, 24, 21, 480, 40));
             string[] names =
             {
                 "Precisão FPS",
                 "Exploração",
-                "Corrida"
+                "Corrida",
+                "Mira estável"
             };
             string[] notes =
             {
                 "Mira mais delicada, curva progressiva e suavização curta.",
                 "Câmera mais fluida para explorar com teclado e mouse.",
-                "W acelera, S freia, A/D viram. Mouse livre."
+                "W acelera, S freia, A/D viram. Mouse livre.",
+                "Xbox, filtro de ruído e mira a 60%. Ponto de partida ajustável."
             };
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < names.Length; i++)
             {
                 string kind = names[i];
                 ActionButton b = new ActionButton

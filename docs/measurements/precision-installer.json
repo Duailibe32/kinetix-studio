@@ -1,0 +1,30 @@
+{
+  "Passed": 18,
+  "Checks": [
+    "instalação inicial criou o executável",
+    "atalho de área de trabalho foi criado",
+    "aplicativo instalado iniciou e gerou diagnóstico",
+    "atualização preservou o perfil selecionado",
+    "aplicativo usou a pasta de dados isolada equivalente a AppData",
+    "migração preservou o conteúdo exato do perfil",
+    "perfil portátil original não foi apagado ou alterado",
+    "reinstalação preservou preferências pessoais",
+    "atualização preservou o atalho",
+    "desinstalação removeu o programa",
+    "desinstalação removeu somente a cópia privada da biblioteca",
+    "desinstalação preservou perfis em AppData",
+    "desinstalação preservou preferências",
+    "desinstalação removeu o atalho de validação",
+    "registro de desinstalação de validação foi removido",
+    "ausência simulada de .NET impediu instalação sem baixar runtime",
+    "driver ausente foi detectado sem instalação silenciosa",
+    "driver compartilhado permaneceu idêntico"
+  ],
+  "BaselineSource": "2.2.1-portable",
+  "BeforeInstalledBytes": 4628153.0,
+  "FinalInstalledBytes": 4629119.0,
+  "BaselineInstallerBytes": 2132094,
+  "FinalInstallerBytes": 2132520,
+  "InstalledDriverStatus": "connected",
+  "DataPreserved": true
+}

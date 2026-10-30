@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$PayloadDir,[string]$OutputDir='installer-output',[string]$OutputName='KinetixStudio-Setup',[string]$AppVersion='2.2.1',[switch]$TestMode,[switch]$ForceMissingNet,[switch]$ForceDriverMissing)
+param([Parameter(Mandatory=$true)][string]$PayloadDir,[string]$OutputDir='installer-output',[string]$OutputName='KinetixStudio-Setup',[string]$AppVersion='2.3.0',[switch]$TestMode,[switch]$ForceMissingNet,[switch]$ForceDriverMissing)
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 if(-not $TestMode){

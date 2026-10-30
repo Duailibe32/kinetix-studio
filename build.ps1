@@ -29,7 +29,7 @@ foreach($name in $runtimeFiles){Copy-Item -LiteralPath (Join-Path $output $name)
 # Payload is a dedicated build folder; only explicitly allowed runtime files may be packaged.
 foreach($file in Get-ChildItem -LiteralPath $payload -File){if($file.Name -notin $runtimeFiles){Remove-Item -LiteralPath $file.FullName -Force}}
 if($Package){
-    $archive=Join-Path $PSScriptRoot 'KinetixStudio-2.2.1-win-x64.zip'
+    $archive=Join-Path $PSScriptRoot 'KinetixStudio-2.3.0-win-x64.zip'
     Compress-Archive -LiteralPath @($runtimeFiles|ForEach-Object{Join-Path $payload $_}) -DestinationPath $archive -Force
     [IO.File]::WriteAllText($archive+'.sha256',(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()+'  '+[IO.Path]::GetFileName($archive)+[Environment]::NewLine)
 }

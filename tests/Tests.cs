@@ -63,6 +63,7 @@ namespace KinetixStudio
                 s = Mapper.Map(p, keys, 0, -20, .008, ref sx, ref sy);
                 Assert(s.RY < 0, "inversão Y");
                 AimRegression();
+                PrecisionSettingsRegression();
                 p.MouseEnabled = false;
                 s = Mapper.Map(p, keys, 100, 100, .008, ref sx, ref sy);
                 Assert(s.RX == 0 && s.RY == 0, "mouse desativado neutraliza RS");
@@ -319,6 +320,15 @@ namespace KinetixStudio
                 pad.Send(new PadState());
                 Thread.Sleep(60);
                 Assert(Native.XInputGetState(slot, out read) == 0 && read.Report.Buttons == 0 && read.Report.LY == 0, "XInput confirma soltura e centro");
+                p = Profile.Create(); p.Smoothing = p.Deadzone = 0; p.Curve = 100;
+                p.NoiseFilter = 10; p.AdsSensitivity = 50;
+                Array.Clear(keys, 0, keys.Length); keys[2] = true; sx = sy = 0;
+                s = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+                var expected = VirtualPad.ToXbox(s); pad.Send(s); Thread.Sleep(60);
+                Assert(Native.XInputGetState(slot, out read) == 0 && read.Report.L2 == 255 && read.Report.RX == expected.RX && read.Report.RY == expected.RY && read.Report.RX > 0, "XInput recebe mouse com filtro e multiplicador ADS");
+                keys[2] = false; sx = sy = 0;
+                pad.Send(Mapper.Map(p, keys, 0, 0, .008, ref sx, ref sy)); Thread.Sleep(60);
+                Assert(Native.XInputGetState(slot, out read) == 0 && read.Report.L2 == 0 && read.Report.RX == 0 && read.Report.RY == 0, "XInput confirma liberação de ADS e neutro do mouse");
             }
 
             using (VirtualPad pad = new VirtualPad("PS4"))
@@ -343,6 +353,70 @@ namespace KinetixStudio
                 System.Windows.Forms.Application.DoEvents();
                 Thread.Sleep(2);
             }
+        }
+
+        static void PrecisionSettingsRegression()
+        {
+            var p = Profile.Create();
+            p.Smoothing = p.Deadzone = 0; p.Curve = 100;
+            var keys = new bool[258];
+            double sx = 0, sy = 0;
+            var plain = Mapper.Map(p, keys, .1, -.05, .008, ref sx, ref sy);
+            p.NoiseFilter = 20; sx = sy = 0;
+            var filtered = Mapper.Map(p, keys, .1, -.05, .008, ref sx, ref sy);
+            Assert(filtered.RX > 0 && filtered.RX < plain.RX && filtered.RY > 0, "filtro reduz microrruído sem inverter ou zerar a direção");
+            Assert(Math.Abs(filtered.RY / filtered.RX - .5) < .000001, "filtro radial preserva proporção entre eixos");
+            bool monotonic = true; double previous = 0;
+            for (int i = 0; i <= 100; i++)
+            {
+                sx = sy = 0;
+                var sample = Mapper.Map(p, keys, i / 100.0, 0, .008, ref sx, ref sy);
+                monotonic &= sample.RX >= previous && sample.RX <= 1;
+                previous = sample.RX;
+            }
+            Assert(monotonic, "filtro mantém resposta crescente sem saltos de direção");
+            sx = sy = 0;
+            var full = Mapper.Map(p, keys, 10000, 0, .008, ref sx, ref sy);
+            Assert(full.RX == 1, "filtro de ruído preserva alcance máximo");
+            p.NoiseFilter = 0; sx = sy = 0;
+            var disabled = Mapper.Map(p, keys, .1, -.05, .008, ref sx, ref sy);
+            Assert(disabled.RX == plain.RX && disabled.RY == plain.RY, "filtro zero mantém resposta anterior exatamente");
+            sx = sy = 0;
+            var normal = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+            p.AdsSensitivity = 50; keys[2] = true; sx = sy = 0;
+            var ads = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+            Assert(ads.Has("L2") && Math.Abs(ads.RX / normal.RX - .5) < .000001 && Math.Abs(ads.RY / normal.RY - .5) < .000001, "LT/L2 reduz os dois eixos conforme o multiplicador de mira");
+            p.Bindings.First(b => b.Action == "L2").Key = 86; keys[2] = false; keys[86] = true; sx = sy = 0;
+            ads = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+            Assert(Math.Abs(ads.RX / normal.RX - .5) < .000001, "mira segue a ação L2 remapeada para outra tecla");
+            keys[86] = false; sx = sy = 0;
+            var released = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+            Assert(released.RX == normal.RX && released.RY == normal.RY, "soltar L2 restaura sensibilidade normal");
+            p.MouseStick = "Left"; keys[86] = true; sx = sy = 0;
+            var left = Mapper.Map(p, keys, 4, -2, .008, ref sx, ref sy);
+            Assert(left.LX == normal.RX && left.LY == normal.RY, "multiplicador ADS não altera mouse no analógico esquerdo");
+            p.NoiseFilter = 17;
+            var roundTrip = Store.Deserialize(Store.Serialize(p));
+            Assert(roundTrip.AdsSensitivity == 50 && roundTrip.NoiseFilter == 17, "novos ajustes persistem em JSON");
+            string old = Store.Serialize(Profile.Create());
+            foreach (string name in new[] { "NoiseFilter", "AdsSensitivity" })
+                old = System.Text.RegularExpressions.Regex.Replace(old, ",\"" + name + "\":[0-9]+", "");
+            var migrated = Store.Deserialize(old);
+            Assert(migrated.NoiseFilter == 0 && migrated.AdsSensitivity == 100, "perfil anterior mantém comportamento sem filtro nem redução ADS");
+            bool invalid = true;
+            foreach (int n in new[] { -1, 31 })
+            {
+                var bad = Profile.Create(); bad.NoiseFilter = n;
+                try { bad.Validate(); invalid = false; } catch (InvalidDataException) { }
+            }
+            foreach (int n in new[] { 9, 101 })
+            {
+                var bad = Profile.Create(); bad.AdsSensitivity = n;
+                try { bad.Validate(); invalid = false; } catch (InvalidDataException) { }
+            }
+            Assert(invalid, "importação rejeita novos ajustes fora dos limites");
+            var preset = Profile.Preset("Mira estável"); preset.Validate();
+            Assert(preset.Controller == "X360" && preset.NoiseFilter == 10 && preset.AdsSensitivity == 60, "novo preset oferece filtro e ADS sem alterar os anteriores");
         }
 
         static void AimRegression()

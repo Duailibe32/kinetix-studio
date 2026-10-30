@@ -786,6 +786,18 @@ namespace KinetixStudio
                 }
             }, false);
             advanced.Height = 300;
+            SoftPanel precision = Card(28, 1000, w, 270);
+            Slider(precision, "Filtro de ruído", "Atenua pequenas oscilações sem recortar a direção. Zero desativa.", 0, 30, profile.NoiseFilter, 22, 20, v =>
+            {
+                profile.NoiseFilter = v;
+                Changed();
+            }, "");
+            Slider(precision, "Sensibilidade ao mirar · LT / L2", "Multiplicador do mouse enquanto o gatilho esquerdo está pressionado.", 10, 100, profile.AdsSensitivity, 22, 103, v =>
+            {
+                profile.AdsSensitivity = v;
+                Changed();
+            }, "%");
+            precision.Controls.Add(T.Label("A redução ao mirar vale apenas para o analógico direito. 100% mantém a sensibilidade normal. O jogo pode aplicar sua própria sensibilidade de mira também.", 9, T.Muted, 22, 192, w - 44, 65));
         }
 
         CheckBox Check(Control parent, string text, int x, int y, bool value)

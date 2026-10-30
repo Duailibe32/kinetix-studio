@@ -1,5 +1,13 @@
 # Histórico
 
+## 2.3.0 — Ajustes de precisão · 29/10/2026
+
+- Filtro de ruído radial configurável, com transição contínua e alcance completo preservado.
+- Sensibilidade separada para mouse no analógico direito enquanto LT/L2 está pressionado, respeitando teclas remapeadas.
+- Preset adicional Mira estável, com Xbox 360, filtro e multiplicador de mira ajustáveis.
+- Perfis anteriores mantêm filtro desligado e multiplicador de mira em 100%, preservando o comportamento existente.
+- 67 verificações de lógica, seis de integração, duas da interface e 18 de instalação/atualização aprovadas.
+
 ## 2.2.1 — Estabilidade da mira · 27/10/2026
 
 - Compensação da zona morta entra gradualmente nos micromovimentos, eliminando o salto instantâneo para 5–7% do analógico.
